@@ -1,4 +1,4 @@
-package tests.reviews.create;
+package tests.reviews.get;
 
 import api.UsersApiClient;
 import models.clubs.create.CreateClubBodyModel;
@@ -19,37 +19,37 @@ import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-public class CreateReviewsTests extends TestBase {
+public class GetReviewsByIdTests extends TestBase {
 
     private final Faker faker = new Faker();
 
     String username;
     String password;
-    String review;
-    int assessment;
-    int readPages;
-    String accessToken;
     String bookTitle;
     String bookAuthors;
     int publicationYear;
     String description;
     String telegramChatLink;
+    String accessToken;
+    String review;
+    int assessment;
+    int readPages;
 
     @BeforeEach
     public void prepareTestData() {
+        long uniqueSuffix = System.currentTimeMillis();
         username = "user_" + System.currentTimeMillis();
         password = "pass_" + System.currentTimeMillis();
-
-        long uniqueSuffix = System.currentTimeMillis();
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
 
         bookTitle = faker.book().title() + "_" + uniqueSuffix;
         bookAuthors = faker.book().author();
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
         telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+
+        assessment = faker.number().numberBetween(1, 4);
+        review = faker.book().title() + "_" + uniqueSuffix;
+        readPages = faker.number().positive();
     }
 
     @AfterEach
@@ -60,7 +60,7 @@ public class CreateReviewsTests extends TestBase {
     }
 
     @Test
-    public void successfulCreateReviewTest() {
+    public void successfulGetReviewsByIdTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
 
@@ -90,12 +90,16 @@ public class CreateReviewsTests extends TestBase {
         Instant responseInstant = Instant.parse(createReviewsResponse.created());
         Instant currentInstant = Instant.now().truncatedTo(ChronoUnit.MICROS);
 
-        assertThat(createReviewsResponse.id()).isGreaterThan(0);
-        assertThat(createReviewsResponse.club()).isEqualTo(createReviewsBody.club());
-        assertThat(createReviewsResponse.review()).isEqualTo(createReviewsBody.review());
-        assertThat(createReviewsResponse.assessment()).isEqualTo(createReviewsBody.assessment());
-        assertThat(createReviewsResponse.readPages()).isEqualTo(createReviewsBody.readPages());
+        SuccessfulCreateReviewsResponseModel getReviewsResponse =
+                api.reviews.getReviewsById(accessToken, createReviewsResponse.id());
+
+        assertThat(getReviewsResponse.id()).isEqualTo(createReviewsResponse.id());
+        assertThat(getReviewsResponse.club()).isEqualTo(createClubResponse.id());
+        assertThat(getReviewsResponse.review()).isEqualTo(createReviewsBody.review());
+        assertThat(getReviewsResponse.assessment()).isEqualTo(createReviewsBody.assessment());
+        assertThat(getReviewsResponse.readPages()).isEqualTo(createReviewsBody.readPages());
         assertThat(responseInstant).isCloseTo(currentInstant, within(1, ChronoUnit.SECONDS));
-        assertThat(createReviewsResponse.modified()).isNull();
+        assertThat(getReviewsResponse.modified()).isNull();
+
     }
 }

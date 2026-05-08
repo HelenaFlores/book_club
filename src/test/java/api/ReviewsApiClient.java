@@ -21,6 +21,8 @@ import static specs.clubs.update.UpdateClubSpec.successfulUpdateClubResponseSpec
 import static specs.clubs.update.UpdateClubSpec.updateClubRequestSpec;
 import static specs.reviews.create.CreateReviewsSpec.createReviewsRequestSpec;
 import static specs.reviews.create.CreateReviewsSpec.successfulCreateReviewsResponseSpec;
+import static specs.reviews.get.GetReviewsByIdSpec.getReviewsByIdRequestSpec;
+import static specs.reviews.get.GetReviewsByIdSpec.successfulGetReviewsByIdResponseSpec;
 
 public class ReviewsApiClient {
 
@@ -33,6 +35,19 @@ public class ReviewsApiClient {
                 .post("/clubs/reviews/")
                 .then()
                 .spec(successfulCreateReviewsResponseSpec)
+                .extract()
+                .as(SuccessfulCreateReviewsResponseModel.class);
+    }
+
+    @Step("Отправка GET запроса на получение отзыва по id")
+    public SuccessfulCreateReviewsResponseModel getReviewsById(String accessToken, int reviewsId) {
+        return given(getReviewsByIdRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", reviewsId)
+                .when()
+                .get("/clubs/reviews/{id}")
+                .then()
+                .spec(successfulGetReviewsByIdResponseSpec)
                 .extract()
                 .as(SuccessfulCreateReviewsResponseModel.class);
     }

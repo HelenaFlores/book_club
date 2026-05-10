@@ -1,19 +1,21 @@
-package tests.clubs.getbyid;
+package tests.API.clubs.update;
 
 import api.UsersApiClient;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
+import models.clubs.update.SuccessfulUpdateClubResponseModel;
+import models.clubs.update.UpdateClubBodyModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
+import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GetClubByIdTests extends TestBase {
+public class UpdateClubTests extends TestBase {
 
     private final Faker faker = new Faker();
 
@@ -47,7 +49,7 @@ public class GetClubByIdTests extends TestBase {
     }
 
     @Test
-    public void successfulGetClubByIdTest() {
+    public void successfulUpdateClubTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
 
@@ -65,18 +67,23 @@ public class GetClubByIdTests extends TestBase {
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
 
-        SuccessfulCreateClubResponseModel getClubResponse =
-                api.clubs.getClubById(accessToken, createClubResponse.id());
+        String updatedBookTitle = faker.book().title() + "_updated";
+        String updatedDescription = faker.lorem().sentence(15);
 
-        assertThat(getClubResponse.id()).isEqualTo(createClubResponse.id());
-        assertThat(getClubResponse.bookTitle()).isEqualTo(createClubBody.bookTitle());
-        assertThat(getClubResponse.bookAuthors()).isEqualTo(createClubBody.bookAuthors());
-        assertThat(getClubResponse.publicationYear()).isEqualTo(createClubBody.publicationYear());
-        assertThat(getClubResponse.description()).isEqualTo(createClubBody.description());
-        assertThat(getClubResponse.telegramChatLink()).isEqualTo(createClubBody.telegramChatLink());
-        assertThat(getClubResponse.owner()).isGreaterThan(0);
-        assertThat(getClubResponse.members()).isNotNull().isNotEmpty();
-        assertThat(getClubResponse.reviews()).isNotNull();
-        assertThat(getClubResponse.created()).isNotBlank();
+        UpdateClubBodyModel updateClubBody = new UpdateClubBodyModel(
+                updatedBookTitle,
+                bookAuthors,
+                publicationYear,
+                updatedDescription,
+                telegramChatLink
+        );
+        SuccessfulUpdateClubResponseModel updateClubResponse =
+                api.clubs.updateClub(accessToken, createClubResponse.id(), updateClubBody);
+
+        assertThat(updateClubResponse.id()).isEqualTo(createClubResponse.id());
+        assertThat(updateClubResponse.bookTitle()).isEqualTo(updatedBookTitle);
+        assertThat(updateClubResponse.description()).isEqualTo(updatedDescription);
+        assertThat(updateClubResponse.owner()).isEqualTo(createClubResponse.owner());
+        assertThat(updateClubResponse.modified()).isNotBlank();
     }
 }

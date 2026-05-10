@@ -1,15 +1,12 @@
-package tests.users.delete;
+package tests.API.users.delete;
 
-import api.ClubsApiClient;
 import api.UsersApiClient;
-import models.clubs.create.CreateClubBodyModel;
-import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
+import tests.API.TestBase;
 
 public class DeleteUserTests extends TestBase {
 

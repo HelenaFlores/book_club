@@ -1,4 +1,4 @@
-package tests.users.update.put;
+package tests.API.users.update.put;
 
 import api.UsersApiClient;
 import models.users.login.LoginBodyModel;
@@ -10,7 +10,7 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
+import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;

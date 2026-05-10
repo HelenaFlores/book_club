@@ -5,8 +5,6 @@ import io.restassured.response.ValidatableResponse;
 import models.users.registration.*;
 
 import static io.restassured.RestAssured.given;
-import static specs.clubs.delete.DeleteClubSpec.deleteClubRequestSpec;
-import static specs.clubs.delete.DeleteClubSpec.successfulDeleteClubResponseSpec;
 import static specs.users.delete.DeleteUserSpec.deleteUserRequestSpec;
 import static specs.users.delete.DeleteUserSpec.successfulDeleteUserResponseSpec;
 import static specs.users.registration.RegistrationSpec.*;

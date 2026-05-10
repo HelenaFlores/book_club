@@ -1,4 +1,4 @@
-package tests.users.registration;
+package tests.API.users.registration;
 
 import api.UsersApiClient;
 import models.users.login.LoginBodyModel;
@@ -6,7 +6,7 @@ import models.users.registration.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
+import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;

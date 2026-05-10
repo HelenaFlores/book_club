@@ -1,25 +1,19 @@
-package tests.reviews.get;
+package tests.API.clubs.getbyid;
 
 import api.UsersApiClient;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
-import models.reviews.create.CreateReviewsBodyModel;
-import models.reviews.create.SuccessfulCreateReviewsResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
 
-public class GetReviewsByIdTests extends TestBase {
+public class GetClubByIdTests extends TestBase {
 
     private final Faker faker = new Faker();
 
@@ -31,9 +25,6 @@ public class GetReviewsByIdTests extends TestBase {
     String description;
     String telegramChatLink;
     String accessToken;
-    String review;
-    int assessment;
-    int readPages;
 
     @BeforeEach
     public void prepareTestData() {
@@ -46,10 +37,6 @@ public class GetReviewsByIdTests extends TestBase {
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
         telegramChatLink = "https://t.me/club_" + uniqueSuffix;
-
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
     }
 
     @AfterEach
@@ -60,7 +47,7 @@ public class GetReviewsByIdTests extends TestBase {
     }
 
     @Test
-    public void successfulGetReviewsByIdTest() {
+    public void successfulGetClubByIdTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
 
@@ -78,28 +65,18 @@ public class GetReviewsByIdTests extends TestBase {
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
 
-        CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
-                createClubResponse.id(),
-                review,
-                assessment,
-                readPages
-        );
-        SuccessfulCreateReviewsResponseModel createReviewsResponse =
-                api.reviews.createReviews(accessToken, createReviewsBody);
+        SuccessfulCreateClubResponseModel getClubResponse =
+                api.clubs.getClubById(accessToken, createClubResponse.id());
 
-        Instant responseInstant = Instant.parse(createReviewsResponse.created());
-        Instant currentInstant = Instant.now().truncatedTo(ChronoUnit.MICROS);
-
-        SuccessfulCreateReviewsResponseModel getReviewsResponse =
-                api.reviews.getReviewsById(accessToken, createReviewsResponse.id());
-
-        assertThat(getReviewsResponse.id()).isEqualTo(createReviewsResponse.id());
-        assertThat(getReviewsResponse.club()).isEqualTo(createClubResponse.id());
-        assertThat(getReviewsResponse.review()).isEqualTo(createReviewsBody.review());
-        assertThat(getReviewsResponse.assessment()).isEqualTo(createReviewsBody.assessment());
-        assertThat(getReviewsResponse.readPages()).isEqualTo(createReviewsBody.readPages());
-        assertThat(responseInstant).isCloseTo(currentInstant, within(1, ChronoUnit.SECONDS));
-        assertThat(getReviewsResponse.modified()).isNull();
-
+        assertThat(getClubResponse.id()).isEqualTo(createClubResponse.id());
+        assertThat(getClubResponse.bookTitle()).isEqualTo(createClubBody.bookTitle());
+        assertThat(getClubResponse.bookAuthors()).isEqualTo(createClubBody.bookAuthors());
+        assertThat(getClubResponse.publicationYear()).isEqualTo(createClubBody.publicationYear());
+        assertThat(getClubResponse.description()).isEqualTo(createClubBody.description());
+        assertThat(getClubResponse.telegramChatLink()).isEqualTo(createClubBody.telegramChatLink());
+        assertThat(getClubResponse.owner()).isGreaterThan(0);
+        assertThat(getClubResponse.members()).isNotNull().isNotEmpty();
+        assertThat(getClubResponse.reviews()).isNotNull();
+        assertThat(getClubResponse.created()).isNotBlank();
     }
 }

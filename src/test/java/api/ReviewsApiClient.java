@@ -3,19 +3,20 @@ package api;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import models.reviews.create.CreateReviewsBodyModel;
+import models.reviews.create.CreateReviewsWithoutAuthResponseModel;
 import models.reviews.create.SuccessfulCreateReviewsResponseModel;
+import models.reviews.update.InvalidClubUpdateReviewsResponseModel;
 import models.reviews.update.SuccessfulUpdateReviewsResponseModel;
 import models.reviews.update.UpdateReviewsBodyModel;
+import org.apache.commons.lang3.ObjectUtils;
 
 import static io.restassured.RestAssured.given;
-import static specs.clubs.delete.DeleteClubSpec.deleteClubRequestSpec;
-import static specs.clubs.delete.DeleteClubSpec.successfulDeleteClubResponseSpec;
-import static specs.reviews.create.CreateReviewsSpec.createReviewsRequestSpec;
-import static specs.reviews.create.CreateReviewsSpec.successfulCreateReviewsResponseSpec;
-import static specs.reviews.update.UpdateReviewsSpec.successfulUpdateReviewsResponseSpec;
-import static specs.reviews.update.UpdateReviewsSpec.updateReviewsRequestSpec;
+import static specs.reviews.create.CreateReviewsSpec.*;
+import static specs.reviews.delete.DeleteReviewsSpec.deleteReviewsRequestSpec;
+import static specs.reviews.delete.DeleteReviewsSpec.successfulDeleteReviewsResponseSpec;
 import static specs.reviews.get.GetReviewsByIdSpec.getReviewsByIdRequestSpec;
 import static specs.reviews.get.GetReviewsByIdSpec.successfulGetReviewsByIdResponseSpec;
+import static specs.reviews.update.UpdateReviewsSpec.*;
 
 public class ReviewsApiClient {
 
@@ -30,6 +31,18 @@ public class ReviewsApiClient {
                 .spec(successfulCreateReviewsResponseSpec)
                 .extract()
                 .as(SuccessfulCreateReviewsResponseModel.class);
+    }
+
+    @Step("Отправка POST запроса на создание отзыва без авторизации")
+    public CreateReviewsWithoutAuthResponseModel createReviewsWithoutAuth(CreateReviewsBodyModel createReviewsBody) {
+        return given(createReviewsRequestSpec)
+                .body(createReviewsBody)
+                .when()
+                .post("/clubs/reviews/")
+                .then()
+                .spec(createReviewsWithoutAuthResponseSpec)
+                .extract()
+                .as(CreateReviewsWithoutAuthResponseModel.class);
     }
 
     @Step("Отправка GET запроса на получение отзыва по id")
@@ -60,15 +73,29 @@ public class ReviewsApiClient {
                 .as(SuccessfulUpdateReviewsResponseModel.class);
     }
 
-    /////////////////////////
-    @Step("Отправка DELETE запроса на удаление книжного клуба")
-    public static ValidatableResponse deleteClub(String accessToken, int clubId) {
-        return given(deleteClubRequestSpec)
+    @Step("Отправка PUT запроса на редактирование отзыва")
+    public InvalidClubUpdateReviewsResponseModel invalidClubUpdateReviews(String accessToken, int reviewsId,
+                                                        UpdateReviewsBodyModel updateReviewsBody) {
+        return given(updateReviewsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
-                .pathParam("id", clubId)
+                .pathParam("id", reviewsId)
+                .body(updateReviewsBody)
+                .when()
+                .put("/clubs/reviews/{id}/")
+                .then()
+                .spec(invalidClubUpdateReviewsResponseSpec)
+                .extract()
+                .as(InvalidClubUpdateReviewsResponseModel.class);
+    }
+
+    @Step("Отправка DELETE запроса на удаление отзыва")
+    public static ValidatableResponse deleteReviews(String accessToken, int reviewsId) {
+        return given(deleteReviewsRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", reviewsId)
                 .when()
                 .delete("/clubs/reviews/{id}/")
                 .then()
-                .spec(successfulDeleteClubResponseSpec);
+                .spec(successfulDeleteReviewsResponseSpec);
     }
 }

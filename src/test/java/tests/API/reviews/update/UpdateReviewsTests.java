@@ -5,7 +5,7 @@ import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.reviews.create.CreateReviewsBodyModel;
 import models.reviews.create.SuccessfulCreateReviewsResponseModel;
-import models.reviews.update.InvalidClubUpdateReviewsResponseModel;
+import models.reviews.update.ForbiddenUpdateReviewsResponseModel;
 import models.reviews.update.SuccessfulUpdateReviewsResponseModel;
 import models.reviews.update.UpdateReviewsBodyModel;
 import models.users.login.LoginBodyModel;
@@ -137,7 +137,7 @@ public class UpdateReviewsTests extends TestBase {
 
     @DisplayName("Ошибка редактирования отзыва в чужом клубе")
     @Test
-    public void strangerClubUpdateReviewsTest() {
+    public void forbiddenUpdateReviewsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
 
@@ -178,7 +178,7 @@ public class UpdateReviewsTests extends TestBase {
                 updateReadPages
         );
 
-        InvalidClubUpdateReviewsResponseModel updateReviewsResponse =
+        ForbiddenUpdateReviewsResponseModel updateReviewsResponse =
                 api.reviews.invalidClubUpdateReviews(accessTokenSecond, createReviewsResponse.id(), updateReviewsBody);
 
         assertThat(updateReviewsResponse.detail()).isEqualTo(FORBIDDEN_ERROR);

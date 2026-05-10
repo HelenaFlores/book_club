@@ -27,11 +27,11 @@ public class UpdateReviewsSpec {
             .expectBody("created", notNullValue())
             .build();
 
-    public static ResponseSpecification invalidClubUpdateReviewsResponseSpec = new ResponseSpecBuilder()
+    public static ResponseSpecification forbiddenUpdateReviewsResponseSpec = new ResponseSpecBuilder()
             .log(ALL)
             .expectStatusCode(403)
             .expectBody(matchesJsonSchemaInClasspath(
-                    "schemas/reviews/update/invalid_club_update_reviews_response_schema.json"))
+                    "schemas/reviews/update/forbidden_update_reviews_response_schema.json"))
             .expectBody("detail", notNullValue())
             .build();
 }

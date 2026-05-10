@@ -5,10 +5,9 @@ import io.restassured.response.ValidatableResponse;
 import models.reviews.create.CreateReviewsBodyModel;
 import models.reviews.create.CreateReviewsWithoutAuthResponseModel;
 import models.reviews.create.SuccessfulCreateReviewsResponseModel;
-import models.reviews.update.InvalidClubUpdateReviewsResponseModel;
+import models.reviews.update.ForbiddenUpdateReviewsResponseModel;
 import models.reviews.update.SuccessfulUpdateReviewsResponseModel;
 import models.reviews.update.UpdateReviewsBodyModel;
-import org.apache.commons.lang3.ObjectUtils;
 
 import static io.restassured.RestAssured.given;
 import static specs.reviews.create.CreateReviewsSpec.*;
@@ -74,8 +73,8 @@ public class ReviewsApiClient {
     }
 
     @Step("Отправка PUT запроса на редактирование отзыва в чужом клубе")
-    public InvalidClubUpdateReviewsResponseModel invalidClubUpdateReviews(String accessToken, int reviewsId,
-                                                        UpdateReviewsBodyModel updateReviewsBody) {
+    public ForbiddenUpdateReviewsResponseModel invalidClubUpdateReviews(String accessToken, int reviewsId,
+                                                                        UpdateReviewsBodyModel updateReviewsBody) {
         return given(updateReviewsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", reviewsId)
@@ -83,9 +82,9 @@ public class ReviewsApiClient {
                 .when()
                 .put("/clubs/reviews/{id}/")
                 .then()
-                .spec(invalidClubUpdateReviewsResponseSpec)
+                .spec(forbiddenUpdateReviewsResponseSpec)
                 .extract()
-                .as(InvalidClubUpdateReviewsResponseModel.class);
+                .as(ForbiddenUpdateReviewsResponseModel.class);
     }
 
     @Step("Отправка DELETE запроса на удаление отзыва")

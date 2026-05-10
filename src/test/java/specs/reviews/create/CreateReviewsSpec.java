@@ -26,4 +26,12 @@ public class CreateReviewsSpec {
             .expectBody("readPages", notNullValue())
             .expectBody("created", notNullValue())
             .build();
+
+public static ResponseSpecification createReviewsWithoutAuthResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(401)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/reviews/create/without_auth_401_create_reviews_response_schema.json"))
+            .expectBody("detail", notNullValue())
+            .build();
 }

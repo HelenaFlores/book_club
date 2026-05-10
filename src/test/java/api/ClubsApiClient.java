@@ -4,7 +4,6 @@ import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
-import models.clubs.delete.DeleteClubBodyModel;
 import models.clubs.update.SuccessfulUpdateClubResponseModel;
 import models.clubs.update.UpdateClubBodyModel;
 

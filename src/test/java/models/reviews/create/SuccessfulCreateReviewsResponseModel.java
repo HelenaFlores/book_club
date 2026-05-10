@@ -1,9 +1,5 @@
 package models.reviews.create;
 
-import models.clubs.create.ReviewModel;
-
-import java.util.List;
-
 public record SuccessfulCreateReviewsResponseModel(int id,
                                                    int club,
                                                    String review,

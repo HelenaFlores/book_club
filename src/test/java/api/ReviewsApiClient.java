@@ -58,7 +58,7 @@ public class ReviewsApiClient {
                 .as(SuccessfulCreateReviewsResponseModel.class);
     }
 
-    @Step("Отправка PUT запроса на редактирование отзыва")
+    @Step("Успешная отправка PUT запроса на редактирование отзыва")
     public SuccessfulUpdateReviewsResponseModel updateReviews(String accessToken, int reviewsId,
                                                         UpdateReviewsBodyModel updateReviewsBody) {
         return given(updateReviewsRequestSpec)
@@ -73,7 +73,7 @@ public class ReviewsApiClient {
                 .as(SuccessfulUpdateReviewsResponseModel.class);
     }
 
-    @Step("Отправка PUT запроса на редактирование отзыва")
+    @Step("Отправка PUT запроса на редактирование отзыва в чужом клубе")
     public InvalidClubUpdateReviewsResponseModel invalidClubUpdateReviews(String accessToken, int reviewsId,
                                                         UpdateReviewsBodyModel updateReviewsBody) {
         return given(updateReviewsRequestSpec)

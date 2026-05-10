@@ -13,6 +13,7 @@ import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
@@ -21,9 +22,9 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static tests.TestData.WITHOUT_AUTH_DETAIL_ERROR;
-import static tests.TestData.getInvalidClubDetailError;
+import static tests.TestData.FORBIDDEN_ERROR;
 
+@DisplayName("[API] Редактирование отзыва")
 public class UpdateReviewsTests extends TestBase {
 
     private final Faker faker = new Faker();
@@ -76,8 +77,12 @@ public class UpdateReviewsTests extends TestBase {
         if (accessToken != null) {
             UsersApiClient.deleteUser(accessToken);
         }
+        if (accessTokenSecond != null) {
+            UsersApiClient.deleteUser(accessTokenSecond);
+        }
     }
 
+    @DisplayName("Успешное редактирование отзыва своего клуба")
     @Test
     public void successfulUpdateReviewsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
@@ -108,7 +113,7 @@ public class UpdateReviewsTests extends TestBase {
                 api.reviews.createReviews(accessToken, createReviewsBody);
 
         UpdateReviewsBodyModel updateReviewsBody = new UpdateReviewsBodyModel(
-                createReviewsResponse.id(),
+                createClubResponse.id(),
                 updatedReview,
                 updatedAssessment,
                 updateReadPages
@@ -130,6 +135,7 @@ public class UpdateReviewsTests extends TestBase {
         assertThat(responseInstantModified).isCloseTo(currentInstant, within(2, ChronoUnit.SECONDS));
     }
 
+    @DisplayName("Ошибка редактирования отзыва в чужом клубе")
     @Test
     public void strangerClubUpdateReviewsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
@@ -142,7 +148,7 @@ public class UpdateReviewsTests extends TestBase {
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond =new LoginBodyModel(registrationDataSecond.username(), registrationData.password());
+        LoginBodyModel loginDataSecond =new LoginBodyModel(usernameSecond, passwordSecond);
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
@@ -175,7 +181,6 @@ public class UpdateReviewsTests extends TestBase {
         InvalidClubUpdateReviewsResponseModel updateReviewsResponse =
                 api.reviews.invalidClubUpdateReviews(accessTokenSecond, createReviewsResponse.id(), updateReviewsBody);
 
-        String expectedError = getInvalidClubDetailError(createReviewsResponse.id());
-        assertThat(updateReviewsResponse.club().get(0)).isEqualTo(expectedError);
+        assertThat(updateReviewsResponse.detail()).isEqualTo(FORBIDDEN_ERROR);
     }
 }

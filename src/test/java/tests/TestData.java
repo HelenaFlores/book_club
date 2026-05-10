@@ -34,8 +34,6 @@ public class TestData {
 
     public static final String WITHOUT_AUTH_DETAIL_ERROR = "Authentication credentials were not provided.";
 
-    public static String getInvalidClubDetailError(int clubId) {
-        return String.format("Invalid pk \"%d\" - object does not exist.", clubId);
-    }
+    public static final String FORBIDDEN_ERROR = "You do not have permission to perform this action.";
 
 }

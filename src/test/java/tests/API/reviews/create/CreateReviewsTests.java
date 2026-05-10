@@ -67,6 +67,9 @@ public class CreateReviewsTests extends TestBase {
         if (accessToken != null) {
             UsersApiClient.deleteUser(accessToken);
         }
+        if (accessTokenSecond != null) {
+            UsersApiClient.deleteUser(accessTokenSecond);
+        }
     }
 
     @Test
@@ -123,7 +126,7 @@ public class CreateReviewsTests extends TestBase {
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond =new LoginBodyModel(registrationDataSecond.username(), registrationData.password());
+        LoginBodyModel loginDataSecond =new LoginBodyModel(usernameSecond, passwordSecond);
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(

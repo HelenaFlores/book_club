@@ -26,4 +26,12 @@ public class UpdateReviewsSpec {
             .expectBody("readPages", notNullValue())
             .expectBody("created", notNullValue())
             .build();
+
+    public static ResponseSpecification invalidClubUpdateReviewsResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(400)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/reviews/update/invalid_club_update_reviews_response_schema.json"))
+            .expectBody("club", notNullValue())
+            .build();
 }

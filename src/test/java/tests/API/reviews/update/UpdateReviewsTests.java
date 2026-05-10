@@ -1,12 +1,11 @@
-package tests.reviews.update;
+package tests.API.reviews.update;
 
 import api.UsersApiClient;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
-import models.clubs.update.SuccessfulUpdateClubResponseModel;
-import models.clubs.update.UpdateClubBodyModel;
 import models.reviews.create.CreateReviewsBodyModel;
 import models.reviews.create.SuccessfulCreateReviewsResponseModel;
+import models.reviews.update.InvalidClubUpdateReviewsResponseModel;
 import models.reviews.update.SuccessfulUpdateReviewsResponseModel;
 import models.reviews.update.UpdateReviewsBodyModel;
 import models.users.login.LoginBodyModel;
@@ -15,13 +14,15 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.TestBase;
+import tests.API.TestBase;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static tests.TestData.WITHOUT_AUTH_DETAIL_ERROR;
+import static tests.TestData.getInvalidClubDetailError;
 
 public class UpdateReviewsTests extends TestBase {
 
@@ -29,24 +30,30 @@ public class UpdateReviewsTests extends TestBase {
 
     String username;
     String password;
+    String usernameSecond;
+    String passwordSecond;
     String review;
     int assessment;
     int readPages;
     String accessToken;
+    String accessTokenSecond;
     String bookTitle;
     String bookAuthors;
     int publicationYear;
     String description;
     String telegramChatLink;
     String updatedReview;
-    String updatedDescription;
     int updatedAssessment;
     int updateReadPages;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        username = "user_" + + System.nanoTime();
+        password = "pass_" + + System.nanoTime();
+
+        usernameSecond = "user_" + + System.nanoTime();
+        passwordSecond = "pass_" + + System.nanoTime();
+
 
         long uniqueSuffix = System.currentTimeMillis();
         assessment = faker.number().numberBetween(1, 4);
@@ -121,5 +128,54 @@ public class UpdateReviewsTests extends TestBase {
         assertThat(updateReviewsResponse.readPages()).isEqualTo(updateReadPages);
         assertThat(responseInstantCreated).isCloseTo(currentInstant, within(1, ChronoUnit.SECONDS));
         assertThat(responseInstantModified).isCloseTo(currentInstant, within(2, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    public void strangerClubUpdateReviewsTest() {
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        api.users.register(registrationData);
+
+        RegistrationBodyModel registrationDataSecond = new RegistrationBodyModel(usernameSecond, passwordSecond);
+        api.users.register(registrationDataSecond);
+
+        LoginBodyModel loginData =
+                new LoginBodyModel(registrationData.username(), registrationData.password());
+        accessToken = api.auth.loginAndGetAccessToken(loginData);
+
+        LoginBodyModel loginDataSecond =new LoginBodyModel(registrationDataSecond.username(), registrationData.password());
+        accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
+
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
+                bookTitle,
+                bookAuthors,
+                publicationYear,
+                description,
+                telegramChatLink
+        );
+        SuccessfulCreateClubResponseModel createClubResponse =
+                api.clubs.createClub(accessToken, createClubBody);
+
+        CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
+                createClubResponse.id(),
+                review,
+                assessment,
+                readPages
+        );
+
+        SuccessfulCreateReviewsResponseModel createReviewsResponse =
+                api.reviews.createReviews(accessToken, createReviewsBody);
+
+        UpdateReviewsBodyModel updateReviewsBody = new UpdateReviewsBodyModel(
+                createReviewsResponse.id(),
+                updatedReview,
+                updatedAssessment,
+                updateReadPages
+        );
+
+        InvalidClubUpdateReviewsResponseModel updateReviewsResponse =
+                api.reviews.invalidClubUpdateReviews(accessTokenSecond, createReviewsResponse.id(), updateReviewsBody);
+
+        String expectedError = getInvalidClubDetailError(createReviewsResponse.id());
+        assertThat(updateReviewsResponse.club().get(0)).isEqualTo(expectedError);
     }
 }

@@ -32,4 +32,10 @@ public class TestData {
 
     public static final String UPDATE_WRONG_DETAIL_ERROR = "Method \"POST\" not allowed.";
 
+    public static final String WITHOUT_AUTH_DETAIL_ERROR = "Authentication credentials were not provided.";
+
+    public static String getInvalidClubDetailError(int clubId) {
+        return String.format("Invalid pk \"%d\" - object does not exist.", clubId);
+    }
+
 }

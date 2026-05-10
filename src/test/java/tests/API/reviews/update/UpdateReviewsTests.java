@@ -135,7 +135,7 @@ public class UpdateReviewsTests extends TestBase {
         assertThat(responseInstantModified).isCloseTo(currentInstant, within(2, ChronoUnit.SECONDS));
     }
 
-    @DisplayName("Ошибка редактирования отзыва в чужом клубе")
+    @DisplayName("Ошибка редактирования чужого отзыва")
     @Test
     public void forbiddenUpdateReviewsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
@@ -179,7 +179,10 @@ public class UpdateReviewsTests extends TestBase {
         );
 
         ForbiddenUpdateReviewsResponseModel updateReviewsResponse =
-                api.reviews.invalidClubUpdateReviews(accessTokenSecond, createReviewsResponse.id(), updateReviewsBody);
+                api.reviews.forbiddenUpdateReviews(
+                        accessTokenSecond,
+                        createReviewsResponse.id(),
+                        updateReviewsBody);
 
         assertThat(updateReviewsResponse.detail()).isEqualTo(FORBIDDEN_ERROR);
     }

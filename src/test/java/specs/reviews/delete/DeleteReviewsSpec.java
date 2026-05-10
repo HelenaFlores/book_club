@@ -5,6 +5,8 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 import static io.restassured.filter.log.LogDetail.ALL;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.notNullValue;
 import static specs.BaseSpec.baseRequestSpec;
 
 public class DeleteReviewsSpec {
@@ -14,5 +16,13 @@ public class DeleteReviewsSpec {
     public static ResponseSpecification successfulDeleteReviewsResponseSpec = new ResponseSpecBuilder()
             .log(ALL)
             .expectStatusCode(204)
+            .build();
+
+    public static ResponseSpecification forbiddenDeleteReviewsResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(403)
+            .expectBody(matchesJsonSchemaInClasspath(
+                    "schemas/reviews/delete/forbidden_delete_reviews_response_schema.json"))
+            .expectBody("detail", notNullValue())
             .build();
 }

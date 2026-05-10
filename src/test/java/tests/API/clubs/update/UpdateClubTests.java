@@ -10,11 +10,13 @@ import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("[API] Редактирование клуба")
 public class UpdateClubTests extends TestBase {
 
     private final Faker faker = new Faker();
@@ -49,7 +51,8 @@ public class UpdateClubTests extends TestBase {
     }
 
     @Test
-    public void successfulUpdateClubTest() {
+    @DisplayName("Успешное редактирование клуба PATCH запросом")
+    public void successfulPatchUpdateClubTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
 
@@ -79,6 +82,46 @@ public class UpdateClubTests extends TestBase {
         );
         SuccessfulUpdateClubResponseModel updateClubResponse =
                 api.clubs.updateClub(accessToken, createClubResponse.id(), updateClubBody);
+
+        assertThat(updateClubResponse.id()).isEqualTo(createClubResponse.id());
+        assertThat(updateClubResponse.bookTitle()).isEqualTo(updatedBookTitle);
+        assertThat(updateClubResponse.description()).isEqualTo(updatedDescription);
+        assertThat(updateClubResponse.owner()).isEqualTo(createClubResponse.owner());
+        assertThat(updateClubResponse.modified()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("Успешное редактирование клуба PUT запросом")
+    public void successfulPutUpdateClubTest() {
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        api.users.register(registrationData);
+
+        LoginBodyModel loginData =
+                new LoginBodyModel(registrationData.username(), registrationData.password());
+        accessToken = api.auth.loginAndGetAccessToken(loginData);
+
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
+                bookTitle,
+                bookAuthors,
+                publicationYear,
+                description,
+                telegramChatLink
+        );
+        SuccessfulCreateClubResponseModel createClubResponse =
+                api.clubs.createClub(accessToken, createClubBody);
+
+        String updatedBookTitle = faker.book().title() + "_updated";
+        String updatedDescription = faker.lorem().sentence(15);
+
+        UpdateClubBodyModel updateClubBody = new UpdateClubBodyModel(
+                updatedBookTitle,
+                bookAuthors,
+                publicationYear,
+                updatedDescription,
+                telegramChatLink
+        );
+        SuccessfulUpdateClubResponseModel updateClubResponse =
+                api.clubs.updatePutClub(accessToken, createClubResponse.id(), updateClubBody);
 
         assertThat(updateClubResponse.id()).isEqualTo(createClubResponse.id());
         assertThat(updateClubResponse.bookTitle()).isEqualTo(updatedBookTitle);

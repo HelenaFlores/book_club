@@ -8,11 +8,13 @@ import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("[API] Просмотр клуба по id")
 public class GetClubByIdTests extends TestBase {
 
     private final Faker faker = new Faker();
@@ -47,6 +49,7 @@ public class GetClubByIdTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Успешный просмотр клуба по id")
     public void successfulGetClubByIdTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);

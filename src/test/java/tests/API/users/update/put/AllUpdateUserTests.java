@@ -9,12 +9,14 @@ import models.users.update.WrongUpdateMethodAllowedResponseModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;
 
+@DisplayName("[API] Редактирование профиля PUT запросом")
 public class AllUpdateUserTests extends TestBase {
 
     Faker faker = new Faker();
@@ -43,6 +45,7 @@ public class AllUpdateUserTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Успешное редактирование пользователя")
     public void successfulAllUpdateTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
                         api.users.register(registrationData);
@@ -59,6 +62,7 @@ public class AllUpdateUserTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Редактирование пользователя с неверным методом")
     public void wrongMethodAllowedAllUpdateTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
                         api.users.register(registrationData);

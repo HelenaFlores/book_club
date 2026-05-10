@@ -5,12 +5,14 @@ import models.users.login.LoginBodyModel;
 import models.users.registration.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;
 
+@DisplayName("[API] Регистрация")
 public class RegistrationTests extends TestBase {
 
     String username;
@@ -62,6 +64,7 @@ public class RegistrationTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Успешная регистрация")
     public void existingUserWrongRegistrationTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
 
@@ -80,6 +83,7 @@ public class RegistrationTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Регистрация без поля пароля")
     public void wrongRegistrationWithoutPasswordTest() {
         RegistrationBodyWithoutPasswordModel registrationData = new RegistrationBodyWithoutPasswordModel(username);
 
@@ -92,6 +96,7 @@ public class RegistrationTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Регистрация без поля логина")
     public void wrongRegistrationWithoutLoginTest() {
         RegistrationBodyWithoutLoginModel registrationData = new RegistrationBodyWithoutLoginModel(password);
 

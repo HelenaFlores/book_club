@@ -9,9 +9,11 @@ import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
+@DisplayName("[API] Удаление клуба")
 public class DeleteClubTests extends TestBase {
 
     private final Faker faker = new Faker();
@@ -53,6 +55,7 @@ public class DeleteClubTests extends TestBase {
     }
     
     @Test
+    @DisplayName("Успешное удаление клуба")
     public void successfulDeleteClubsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);

@@ -9,12 +9,14 @@ import models.users.logout.WrongLogoutWithoutTokenResponseModel;
 import models.users.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;
 
+@DisplayName("[API] Выход из профиля")
 public class LogoutTests extends TestBase {
 
     String username;
@@ -49,6 +51,7 @@ public class LogoutTests extends TestBase {
         }
     }
     @Test
+    @DisplayName("Успешный выход из профиля")
     public void successfulLogoutTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
@@ -63,6 +66,7 @@ public class LogoutTests extends TestBase {
 
 
     @Test
+    @DisplayName("Выход из профиля с невалидным токеном")
     public void noValidTokenLogoutTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
@@ -85,6 +89,7 @@ public class LogoutTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Выход из профиля без refresh токена")
     public void wrongWithoutRefreshTokenLogoutTest() {
         LogoutEmptyBodyModel logoutData = new LogoutEmptyBodyModel();
         WrongLogoutWithoutTokenResponseModel logoutResponse =

@@ -60,6 +60,21 @@ public class ClubsApiClient {
                 .as(SuccessfulUpdateClubResponseModel.class);
     }
 
+    @Step("Отправка PUT запроса на редактирование книжного клуба")
+    public SuccessfulUpdateClubResponseModel updatePutClub(String accessToken, int clubId,
+                                                        UpdateClubBodyModel updateClubBody) {
+        return given(updateClubRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", clubId)
+                .body(updateClubBody)
+                .when()
+                .put("/clubs/{id}/")
+                .then()
+                .spec(successfulUpdateClubResponseSpec)
+                .extract()
+                .as(SuccessfulUpdateClubResponseModel.class);
+    }
+
     @Step("Отправка DELETE запроса на удаление книжного клуба")
     public static ValidatableResponse deleteClub(String accessToken, int clubId) {
         return given(deleteClubRequestSpec)

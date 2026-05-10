@@ -5,12 +5,14 @@ import models.users.login.*;
 import models.users.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tests.TestData.*;
 
+@DisplayName("[API] Авторизация")
 public class LoginTests extends TestBase {
 
     String username;
@@ -45,6 +47,7 @@ public class LoginTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Успешная авторизация")
     public void successfulLoginTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
@@ -62,6 +65,7 @@ public class LoginTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Авторизация с неверным паролем")
     public void wrongCredentialsLoginTest() {
         RegistrationBodyModel registrationData =
                 new RegistrationBodyModel(username, password);
@@ -78,6 +82,7 @@ public class LoginTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Авторизация с неверным логином")
     public void wrongLoginNullUsernameTest() {
         LoginBodyModel loginData =
                 new LoginBodyModel(LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL, password);
@@ -91,6 +96,7 @@ public class LoginTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Авторизация с null паролем")
     public void wrongPasswordNullTest() {
         LoginBodyModel loginData =
                 new LoginBodyModel(username, LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL);

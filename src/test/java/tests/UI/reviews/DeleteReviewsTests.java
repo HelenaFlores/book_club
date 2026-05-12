@@ -4,6 +4,8 @@ import api.UsersApiClient;
 import components.AuthComponent;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
+import models.reviews.create.CreateReviewsBodyModel;
+import models.reviews.create.SuccessfulCreateReviewsResponseModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +17,8 @@ import tests.UI.TestBase;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.open;
 
-@DisplayName("[UI] Создание отзыва на клуб")
-public class CreateReviewsTests extends TestBase {
+@DisplayName("[UI] Просмотр отзыва на клуб")
+public class DeleteReviewsTests extends TestBase {
 
     private final Faker faker = new Faker();
 
@@ -61,33 +63,34 @@ public class CreateReviewsTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Успешное создание отзыва на клуб")
+    @DisplayName("Успешное удаление отзыва на клуб")
     public void SuccessfulCreateReviewsOnClubTests() {
-        CreateClubBodyModel clubData = new CreateClubBodyModel(
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
                 bookTitle,
                 bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
+                publicationYear,
                 description,
-                telegramChatLink);
+                telegramChatLink
+        );
+        SuccessfulCreateClubResponseModel createClubResponse =
+                api.clubs.createClub(accessToken, createClubBody);
 
-        SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
-        int clubId = createdClub.id();
+        CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
+                createClubResponse.id(),
+                review,
+                assessment,
+                readPages
+        );
+        SuccessfulCreateReviewsResponseModel createReviewsResponse =
+                api.reviews.createReviews(accessToken, createReviewsBody);
 
-        open(baseUrl + "clubs/" + clubId);
+        open(baseUrl + "clubs/" + createReviewsResponse.club());
 
         ViewClubPage viewClubPage = new ViewClubPage();
 
-        viewClubPage
-                .createReviewsButtonClick()
-                .titleReviewsFormVisible()
-                .assessmentInputSetValue(assessment)
-                .readPagesInputSetValue(readPages)
-                .reviewInputSetValue(review)
-                .publishButtonClick();
+        viewClubPage.deleteReviewButtonClick();
 
         viewClubPage
-                .reviewTextPublishVisible(review)
-                .readPagesPublishVisible(readPages)
-                .starsPublishVisible(assessment);
+                .createReviewsButtonVisible();
     }
 }

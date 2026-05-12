@@ -47,6 +47,7 @@ public class RegistrationTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Успешная регистрация")
     public void successfulRegistrationTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
 
@@ -64,7 +65,7 @@ public class RegistrationTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Успешная регистрация")
+    @DisplayName("Регистрация существующего пользователя")
     public void existingUserWrongRegistrationTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
 

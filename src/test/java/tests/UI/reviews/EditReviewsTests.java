@@ -4,6 +4,8 @@ import api.UsersApiClient;
 import components.AuthComponent;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
+import models.reviews.create.CreateReviewsBodyModel;
+import models.reviews.create.SuccessfulCreateReviewsResponseModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +17,8 @@ import tests.UI.TestBase;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.open;
 
-@DisplayName("[UI] Создание отзыва на клуб")
-public class CreateReviewsTests extends TestBase {
+@DisplayName("[UI] Редактирование отзыва на клуб")
+public class EditReviewsTests extends TestBase {
 
     private final Faker faker = new Faker();
 
@@ -32,6 +34,9 @@ public class CreateReviewsTests extends TestBase {
     String review;
     int assessment;
     int readPages;
+    String updatedReview;
+    int updatedAssessment;
+    int updateReadPages;
 
     @BeforeEach
     public void prepareTestData() {
@@ -51,6 +56,10 @@ public class CreateReviewsTests extends TestBase {
         assessment = faker.number().numberBetween(1, 4);
         review = faker.book().title() + "_" + uniqueSuffix;
         readPages = faker.number().positive();
+
+        updatedReview = faker.book().title() + "_updated";
+        updatedAssessment = faker.number().numberBetween(1, 4);
+        updateReadPages = faker.number().positive();
     }
 
     @AfterEach
@@ -61,33 +70,42 @@ public class CreateReviewsTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Успешное создание отзыва на клуб")
+    @DisplayName("Успешное редактирование отзыва на клуб")
     public void SuccessfulCreateReviewsOnClubTests() {
-        CreateClubBodyModel clubData = new CreateClubBodyModel(
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
                 bookTitle,
                 bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
+                publicationYear,
                 description,
-                telegramChatLink);
+                telegramChatLink
+        );
+        SuccessfulCreateClubResponseModel createClubResponse =
+                api.clubs.createClub(accessToken, createClubBody);
 
-        SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
-        int clubId = createdClub.id();
+        CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
+                createClubResponse.id(),
+                review,
+                assessment,
+                readPages
+        );
+        SuccessfulCreateReviewsResponseModel createReviewsResponse =
+                api.reviews.createReviews(accessToken, createReviewsBody);
 
-        open(baseUrl + "clubs/" + clubId);
+        open(baseUrl + "clubs/" + createReviewsResponse.club());
 
         ViewClubPage viewClubPage = new ViewClubPage();
 
         viewClubPage
-                .createReviewsButtonClick()
-                .titleReviewsFormVisible()
-                .assessmentInputSetValue(assessment)
-                .readPagesInputSetValue(readPages)
-                .reviewInputSetValue(review)
+                .editReviewButtonClick()
+                .titleReviewsEditFormVisible()
+                .assessmentInputSetValue(updatedAssessment)
+                .readPagesInputSetValue(updateReadPages)
+                .reviewInputSetValue(updatedReview)
                 .publishButtonClick();
 
         viewClubPage
-                .reviewTextPublishVisible(review)
-                .readPagesPublishVisible(readPages)
-                .starsPublishVisible(assessment);
+                .reviewTextPublishVisible(updatedReview)
+                .readPagesPublishVisible(updateReadPages)
+                .starsPublishVisible(updatedAssessment);
     }
 }

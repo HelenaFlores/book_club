@@ -29,7 +29,9 @@ public class ViewClubPage {
     private SelenideElement reviewTextPublish = $(".review-content p");
     private SelenideElement readPagesPublish = $(".read-pages");
     private SelenideElement starsPublish = $(".stars");
-
+    private SelenideElement editReviewButton = $(".edit-review-btn");
+    private SelenideElement titleReviewsEditForm = $(".review-form h3");
+    private SelenideElement deleteReviewButton = $(".delete-review-btn");
 
 
     @Step("Проверка заголовка книги: {bookTitle}")
@@ -164,6 +166,31 @@ public class ViewClubPage {
     public ViewClubPage starsPublishVisible(int stars) {
         String expected = "★".repeat(stars) + "☆".repeat(5 - stars);
         starsPublish.shouldHave(exactText(expected));
+        return this;
+    }
+
+    @Step("Открыть форму редактирования отзыва")
+    public ViewClubPage editReviewButtonClick() {
+        editReviewButton.click();
+        return this;
+    }
+
+    @Step("Проверка видимости заголовка формы редактирования отзыва")
+    public ViewClubPage titleReviewsEditFormVisible() {
+        titleReviewsEditForm.shouldHave();
+        return this;
+    }
+
+    @Step("Удалить отзыв")
+    public ViewClubPage deleteReviewButtonClick() {
+        deleteReviewButton.click();
+        confirm();
+        return this;
+    }
+
+    @Step("Проверка наличия кнопки создания отзыва")
+    public ViewClubPage createReviewsButtonVisible() {
+        createReviewsButton.isEnabled();
         return this;
     }
 }

@@ -14,7 +14,7 @@ import tests.UI.TestBase;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.open;
 
-@DisplayName("Авторизация")
+@DisplayName("[UI] Авторизация")
 public class LoginTests extends TestBase {
 
     String username;
@@ -24,8 +24,8 @@ public class LoginTests extends TestBase {
     @BeforeEach
     public void prepareTestData() {
 
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        username = "user_" + System.nanoTime();
+        password = "pass_" + System.nanoTime();
     }
 
     @AfterEach

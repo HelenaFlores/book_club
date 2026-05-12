@@ -44,7 +44,7 @@ public class DeleteReviewsTests extends TestBase {
         usernameSecond = "user_" + + System.nanoTime();
         passwordSecond = "pass_" + + System.nanoTime();
 
-        long uniqueSuffix = System.currentTimeMillis();
+        long uniqueSuffix = System.nanoTime();
         assessment = faker.number().numberBetween(1, 4);
         review = faker.book().title() + "_" + uniqueSuffix;
         readPages = faker.number().positive();

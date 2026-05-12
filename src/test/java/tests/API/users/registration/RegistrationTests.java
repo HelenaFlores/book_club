@@ -23,8 +23,8 @@ public class RegistrationTests extends TestBase {
     @BeforeEach
     public void prepareTestData() {
 
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        username = "user_" + System.nanoTime();
+        password = "pass_" + System.nanoTime();
         registrationData = new RegistrationBodyModel(username, password);
         userCreated = false;
     }

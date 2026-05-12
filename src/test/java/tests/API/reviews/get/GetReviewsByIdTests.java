@@ -42,7 +42,7 @@ public class GetReviewsByIdTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        long uniqueSuffix = System.currentTimeMillis();
+        long uniqueSuffix = System.nanoTime();
         username = "user_" + + System.nanoTime();
         password = "pass_" + + System.nanoTime();
 

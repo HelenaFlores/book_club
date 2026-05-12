@@ -33,8 +33,8 @@ public class AllUpdateUserTests extends TestBase {
         firstname = faker.name().firstName();
         lastName = faker.name().lastName();
         email = faker.internet().emailAddress();
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        username = "user_" + System.nanoTime();
+        password = "pass_" + System.nanoTime();
     }
 
     @AfterEach

@@ -3,6 +3,7 @@ package tests;
 public class TestData {
 
     public static final String LOGIN_TOKEN_PREFIX = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+    public static final String  MIN_URI_FOR_API = "/favicon.ico";
     public static final String LOGIN_WRONG_CREDENTIALS_ERROR = "Invalid username or password.";
     public static final String LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL =
             null;
@@ -19,7 +20,7 @@ public class TestData {
             "^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}"
                     + "(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$";
 
-    public static final String ADDITIONAL_SYMBOLS = String.valueOf(System.currentTimeMillis());
+    public static final String ADDITIONAL_SYMBOLS = String.valueOf(System.nanoTime());
 
     public static final String LOGOUT_WRONG_DETAIL_ERROR =
             "Token is invalid";
@@ -35,5 +36,7 @@ public class TestData {
     public static final String WITHOUT_AUTH_DETAIL_ERROR = "Authentication credentials were not provided.";
 
     public static final String FORBIDDEN_ERROR = "You do not have permission to perform this action.";
+
+    public static final String LEAVE_CLUB_ERROR = "Не удалось покинуть клуб";
 
 }

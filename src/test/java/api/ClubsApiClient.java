@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
+import models.clubs.get.SuccessfulGetClubListResponseModel;
 import models.clubs.update.SuccessfulUpdateClubResponseModel;
 import models.clubs.update.UpdateClubBodyModel;
 
@@ -12,8 +13,10 @@ import static specs.clubs.create.CreateClubSpec.createClubRequestSpec;
 import static specs.clubs.create.CreateClubSpec.successfulCreateClubResponseSpec;
 import static specs.clubs.delete.DeleteClubSpec.deleteClubRequestSpec;
 import static specs.clubs.delete.DeleteClubSpec.successfulDeleteClubResponseSpec;
-import static specs.clubs.getbyid.GetClubByIdSpec.getClubByIdRequestSpec;
-import static specs.clubs.getbyid.GetClubByIdSpec.successfulGetClubByIdResponseSpec;
+import static specs.clubs.get.GetClubByIdSpec.getClubByIdRequestSpec;
+import static specs.clubs.get.GetClubByIdSpec.successfulGetClubByIdResponseSpec;
+import static specs.clubs.get.GetClubListSpec.getClubListRequestSpec;
+import static specs.clubs.get.GetClubListSpec.successfulGetClubListResponseSpec;
 import static specs.clubs.update.UpdateClubSpec.successfulUpdateClubResponseSpec;
 import static specs.clubs.update.UpdateClubSpec.updateClubRequestSpec;
 
@@ -43,6 +46,18 @@ public class ClubsApiClient {
                 .spec(successfulGetClubByIdResponseSpec)
                 .extract()
                 .as(SuccessfulCreateClubResponseModel.class);
+    }
+
+    @Step("Отправка GET запроса на получение списка книжных клубов")
+    public SuccessfulGetClubListResponseModel getClubList(String accessToken) {
+        return given(getClubListRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(successfulGetClubListResponseSpec)
+                .extract()
+                .as(SuccessfulGetClubListResponseModel.class);
     }
 
     @Step("Отправка PATCH запроса на редактирование книжного клуба")

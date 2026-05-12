@@ -32,10 +32,10 @@ public class DeleteClubTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        username = "user_" + System.nanoTime();
+        password = "pass_" + System.nanoTime();
 
-        long uniqueSuffix = System.currentTimeMillis();
+        long uniqueSuffix = System.nanoTime();
         assessment = faker.number().numberBetween(1, 4);
         review = faker.book().title() + "_" + uniqueSuffix;
         readPages = faker.number().positive();

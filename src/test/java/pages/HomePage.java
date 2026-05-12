@@ -1,9 +1,13 @@
 package pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class HomePage {
 
@@ -11,6 +15,10 @@ public class HomePage {
     private SelenideElement loginButton = $("a[href='/signin']");
     private SelenideElement profileButton = $("a[href='/profile']");
     private SelenideElement clubsEmptyResults = $(".no-results");
+    private SelenideElement createClubButton = $("a[href='/clubs/create']");
+    private SelenideElement searchInput = $(".search-input");
+    private SelenideElement openClubCardButton = $(".open-btn");
+    private ElementsCollection listClubCard = $$(".clubs-list");
 
 
     @Step("Открыть страницу регистрации")
@@ -34,6 +42,30 @@ public class HomePage {
     @Step("Проверка отсутствия клубов")
     public HomePage clubsEmptyVisible() {
         clubsEmptyResults.shouldHave();
+        return this;
+    }
+
+    @Step("Открыть страницу создания клуба")
+    public HomePage openCreateClubPage() {
+        createClubButton.click();
+        return this;
+    }
+
+    @Step("Поиск книги по названию: {bookTitle}")
+    public HomePage searchByTitle(String bookTitle) {
+        searchInput.setValue(bookTitle).pressEnter();
+        return this;
+    }
+
+    @Step("Проверка: клуб '{bookTitle}' отображается в результатах")
+    public HomePage clubShouldBeVisibleInList(String bookTitle) {
+        listClubCard.findBy(text(bookTitle)).shouldBe(visible);
+        return this;
+    }
+
+    @Step("Открыть клуб")
+    public HomePage openClubByTitle() {
+        openClubCardButton.click();
         return this;
     }
 }

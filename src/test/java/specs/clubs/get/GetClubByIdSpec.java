@@ -1,4 +1,4 @@
-package specs.clubs.getbyid;
+package specs.clubs.get;
 
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -17,7 +17,7 @@ public class GetClubByIdSpec {
             .log(ALL)
             .expectStatusCode(200)
             .expectBody(matchesJsonSchemaInClasspath(
-                    "schemas/clubs/getbyid/successful_get_club_by_id_response_schema.json"))
+                    "schemas/clubs/get/successful_get_club_by_id_response_schema.json"))
             .expectBody("id", notNullValue())
             .expectBody("bookTitle", notNullValue())
             .expectBody("bookAuthors", notNullValue())

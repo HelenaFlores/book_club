@@ -32,9 +32,9 @@ public class UpdateClubTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        long uniqueSuffix = System.currentTimeMillis();
-        username = "user_" + System.currentTimeMillis();
-        password = "pass_" + System.currentTimeMillis();
+        long uniqueSuffix = System.nanoTime();
+        username = "user_" + System.nanoTime();
+        password = "pass_" + System.nanoTime();
 
         bookTitle = faker.book().title() + "_" + uniqueSuffix;
         bookAuthors = faker.book().author();

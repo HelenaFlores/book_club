@@ -24,7 +24,7 @@ public class TestBase {
         String baseUrl = TestConfig.baseUrl();
         Configuration.baseUrl = baseUrl;
         System.setProperty("selenide.baseUrl", baseUrl);
-        RestAssured.baseURI = "http://localhost:8000";
+        RestAssured.baseURI = "https://book-club.qa.guru/";
         RestAssured.basePath = "/api/v1";
         Configuration.browser = TestConfig.browser();
         Configuration.browserSize = TestConfig.browserSize();

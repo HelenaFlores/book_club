@@ -52,9 +52,6 @@ dependencies {
 tasks.withType(Test) {
     useJUnitPlatform()
     systemProperties(System.getProperties())
-    }
-systemProperty 'remoteUrl', System.getProperty('remoteUrl')
-
 
     testLogging {
         lifecycle {
@@ -62,3 +59,4 @@ systemProperty 'remoteUrl', System.getProperty('remoteUrl')
             exceptionFormat "short"
         }
     }
+}

@@ -1,6 +1,7 @@
 package tests.UI.registration;
 
 import api.UsersApiClient;
+import components.AuthComponent;
 import models.users.login.LoginBodyModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import tests.UI.TestBase;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.open;
+import static java.lang.Thread.sleep;
 
 @DisplayName("[UI] Регистрация")
 public class RegistrationTests extends TestBase {
@@ -19,6 +21,7 @@ public class RegistrationTests extends TestBase {
     String username;
     String password;
     String accessToken;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
@@ -53,7 +56,7 @@ public void after() {
 
     @Test
     @DisplayName("Успешная регистрация")
-    public void SuccessfulRegistrationTests() {
+    public void SuccessfulRegistrationTests() throws InterruptedException {
 
         HomePage homePage = new HomePage();
         RegistrationPage registrationPage = new RegistrationPage();
@@ -71,8 +74,6 @@ public void after() {
         homePage.profileButtonVisible()
                 .clubsEmptyVisible();
 
-        LoginBodyModel loginData =
-                new LoginBodyModel(username, password);
-        accessToken = api.auth.loginAndGetAccessToken(loginData);
+        accessToken = auth.loginAfterUiRegistration(username, password);
     }
 }

@@ -38,7 +38,7 @@ public class ClubHelper {
                     return found.get();
                 }
             } finally {
-                sleep(Duration.ofMillis(500).toMillis());
+                sleep(Duration.ofMillis(1000).toMillis());
             }
 
             throw new AssertionError(

@@ -9,6 +9,8 @@ import models.clubs.get.SuccessfulGetClubListResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static io.qameta.allure.Allure.step;
@@ -78,5 +80,13 @@ public class AuthComponent {
         registerViaApi(username, password);
         loginViaApiAndSetCookies(username, password);
         return accessToken;
+    }
+
+    public String loginAfterUiRegistration(String username, String password) {
+        return step("Логин после UI-регистрации", () -> {
+            sleep(1000);
+            LoginBodyModel loginData = new LoginBodyModel(username, password);
+            return api.auth.loginAndGetAccessToken(loginData);
+        });
     }
 }

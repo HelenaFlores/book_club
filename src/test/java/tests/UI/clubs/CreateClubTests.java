@@ -98,7 +98,7 @@ public class CreateClubTests extends TestBase {
                 .createClubButtonClick();
 
         SuccessfulGetClubListResponseModel clubListResponse = api.clubs.getClubList(accessToken);
-        ClubItemModel ourClub = ClubHelper.findClubByTitle(clubListResponse, bookTitle);
+        ClubItemModel ourClub = ClubHelper.waitForClubInList(accessToken, bookTitle, api.clubs, 10);
         int clubId = ourClub.id();
 
         open(baseUrl + "clubs/" + clubId);

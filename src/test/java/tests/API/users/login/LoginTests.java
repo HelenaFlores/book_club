@@ -35,8 +35,8 @@ public class LoginTests extends TestBase {
 
         try {
             if (accessToken == null) {
-            LoginBodyModel loginData = new LoginBodyModel(username, password);
-            accessToken = api.auth.loginAndGetAccessToken(loginData);
+                LoginBodyModel loginData = new LoginBodyModel(username, password);
+                accessToken = api.auth.loginAndGetAccessToken(loginData);
             }
             if (accessToken != null) {
                 UsersApiClient.deleteUser(accessToken);

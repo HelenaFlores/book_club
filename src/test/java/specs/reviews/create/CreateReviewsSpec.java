@@ -27,7 +27,7 @@ public class CreateReviewsSpec {
             .expectBody("created", notNullValue())
             .build();
 
-public static ResponseSpecification createReviewsWithoutAuthResponseSpec = new ResponseSpecBuilder()
+    public static ResponseSpecification createReviewsWithoutAuthResponseSpec = new ResponseSpecBuilder()
             .log(ALL)
             .expectStatusCode(401)
             .expectBody(matchesJsonSchemaInClasspath(

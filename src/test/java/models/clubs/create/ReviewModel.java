@@ -7,4 +7,5 @@ public record ReviewModel(int id,
                           int assessment,
                           int readPages,
                           String created,
-                          String modified) {}
+                          String modified) {
+}

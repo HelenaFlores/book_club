@@ -35,6 +35,9 @@ public class LeaveClubByIdTests extends TestBase {
     String description;
     String telegramChatLink;
 
+    HomePage homePage = new HomePage();
+    ViewClubPage viewClubPage = new ViewClubPage();
+
     @BeforeEach
     public void prepareTestData() {
         username = "user_" + System.nanoTime();
@@ -44,7 +47,7 @@ public class LeaveClubByIdTests extends TestBase {
         accessToken = auth.setupAuthenticatedUser(username, password);
 
         long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();;
+        bookTitle = faker.book().title() + "_" + System.nanoTime();
         bookAuthors = faker.book().author();
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
@@ -79,9 +82,6 @@ public class LeaveClubByIdTests extends TestBase {
 
         accessTokenSecond = auth.setupAuthenticatedUser(usernameSecond, passwordSecond);
 
-        HomePage homePage = new HomePage();
-        ViewClubPage viewClubPage = new ViewClubPage();
-
         open(baseUrl + "clubs/" + clubId);
 
         viewClubPage
@@ -106,8 +106,6 @@ public class LeaveClubByIdTests extends TestBase {
 
         SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
         int clubId = createdClub.id();
-
-        ViewClubPage viewClubPage = new ViewClubPage();
 
         open(baseUrl + "clubs/" + clubId);
 

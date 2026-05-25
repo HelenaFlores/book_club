@@ -49,11 +49,11 @@ public class UpdateReviewsTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + + System.nanoTime();
-        password = "pass_" + + System.nanoTime();
+        username = "user_" + +System.nanoTime();
+        password = "pass_" + +System.nanoTime();
 
-        usernameSecond = "user_" + + System.nanoTime();
-        passwordSecond = "pass_" + + System.nanoTime();
+        usernameSecond = "user_" + +System.nanoTime();
+        passwordSecond = "pass_" + +System.nanoTime();
 
 
         long uniqueSuffix = System.nanoTime();
@@ -148,7 +148,7 @@ public class UpdateReviewsTests extends TestBase {
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond =new LoginBodyModel(usernameSecond, passwordSecond);
+        LoginBodyModel loginDataSecond = new LoginBodyModel(usernameSecond, passwordSecond);
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(

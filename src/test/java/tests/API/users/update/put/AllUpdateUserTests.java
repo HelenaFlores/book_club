@@ -1,5 +1,6 @@
 package tests.API.users.update.put;
 
+import api.AuthApiClient;
 import api.UsersApiClient;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static tests.TestData.*;
+import static tests.TestData.UPDATE_WRONG_DETAIL_ERROR;
 
 @DisplayName("[API] Редактирование профиля PUT запросом")
 public class AllUpdateUserTests extends TestBase {
@@ -48,13 +49,13 @@ public class AllUpdateUserTests extends TestBase {
     @DisplayName("Успешное редактирование пользователя")
     public void successfulAllUpdateTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
-                        api.users.register(registrationData);
+        api.users.register(registrationData);
 
         LoginBodyModel loginData = new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         AllUpdateBodyModel updateData = new AllUpdateBodyModel(username, firstname, lastName, email);
-        SuccessfulUpdateResponseModel updateResponse = api.auth.putUpdate(accessToken, updateData);
+        SuccessfulUpdateResponseModel updateResponse = AuthApiClient.putUpdate(accessToken, updateData);
 
         String userNameData = updateData.username();
         String userNameResponse = updateResponse.username();
@@ -65,13 +66,13 @@ public class AllUpdateUserTests extends TestBase {
     @DisplayName("Редактирование пользователя с неверным методом")
     public void wrongMethodAllowedAllUpdateTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
-                        api.users.register(registrationData);
+        api.users.register(registrationData);
 
         LoginBodyModel loginData = new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         AllUpdateBodyModel updateData = new AllUpdateBodyModel(username, firstname, lastName, email);
-        WrongUpdateMethodAllowedResponseModel updateResponse = api.auth.errorMethodAllowedPutUpdate(accessToken, updateData);
+        WrongUpdateMethodAllowedResponseModel updateResponse = AuthApiClient.errorMethodAllowedPutUpdate(accessToken, updateData);
 
         String expectedDetailError = UPDATE_WRONG_DETAIL_ERROR;
         String actualDetailError = String.valueOf(updateResponse.detail());

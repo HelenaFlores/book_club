@@ -7,12 +7,12 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class CreateClubPage {
 
-    private SelenideElement createClubButton = $(".submit-btn");
-    private SelenideElement bookTitleInput = $("[id='bookTitle']");
-    private SelenideElement bookAuthorsInput = $("[id='bookAuthors']");
-    private SelenideElement publicationYearInput = $("[id='publicationYear']");
-    private SelenideElement descriptionInput = $("[id='description']");
-    private SelenideElement telegramChatLinkInput = $("[id='telegramChatLink']");
+    private final SelenideElement createClubButton = $(".submit-btn");
+    private final SelenideElement bookTitleInput = $("[id='bookTitle']");
+    private final SelenideElement bookAuthorsInput = $("[id='bookAuthors']");
+    private final SelenideElement publicationYearInput = $("[id='publicationYear']");
+    private final SelenideElement descriptionInput = $("[id='description']");
+    private final SelenideElement telegramChatLinkInput = $("[id='telegramChatLink']");
 
     @Step("Проверка видимости кнопки Создать клуб")
     public CreateClubPage createClubButtonVisible() {

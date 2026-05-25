@@ -22,6 +22,17 @@ import static specs.clubs.update.UpdateClubSpec.updateClubRequestSpec;
 
 public class ClubsApiClient {
 
+    @Step("Отправка DELETE запроса на удаление книжного клуба")
+    public static ValidatableResponse deleteClub(String accessToken, int clubId) {
+        return given(deleteClubRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", clubId)
+                .when()
+                .delete("/clubs/{id}/")
+                .then()
+                .spec(successfulDeleteClubResponseSpec);
+    }
+
     @Step("Отправка POST запроса на создание книжного клуба")
     public SuccessfulCreateClubResponseModel createClub(String accessToken, CreateClubBodyModel createClubBody) {
         return given(createClubRequestSpec)
@@ -77,7 +88,7 @@ public class ClubsApiClient {
 
     @Step("Отправка PUT запроса на редактирование книжного клуба")
     public SuccessfulUpdateClubResponseModel updatePutClub(String accessToken, int clubId,
-                                                        UpdateClubBodyModel updateClubBody) {
+                                                           UpdateClubBodyModel updateClubBody) {
         return given(updateClubRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", clubId)
@@ -88,16 +99,5 @@ public class ClubsApiClient {
                 .spec(successfulUpdateClubResponseSpec)
                 .extract()
                 .as(SuccessfulUpdateClubResponseModel.class);
-    }
-
-    @Step("Отправка DELETE запроса на удаление книжного клуба")
-    public static ValidatableResponse deleteClub(String accessToken, int clubId) {
-        return given(deleteClubRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
-                .pathParam("id", clubId)
-                .when()
-                .delete("/clubs/{id}/")
-                .then()
-                .spec(successfulDeleteClubResponseSpec);
     }
 }

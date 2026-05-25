@@ -1,5 +1,6 @@
 package tests.API.users.logout;
 
+import api.AuthApiClient;
 import api.UsersApiClient;
 import models.users.login.LoginBodyModel;
 import models.users.logout.LogoutBodyModel;
@@ -50,6 +51,7 @@ public class LogoutTests extends TestBase {
             System.err.println("Failed to cleanup test user: " + e.getMessage());
         }
     }
+
     @Test
     @DisplayName("Успешный выход из профиля")
     public void successfulLogoutTest() {
@@ -58,10 +60,10 @@ public class LogoutTests extends TestBase {
         userCreated = true;
 
         LoginBodyModel loginData = new LoginBodyModel(username, password);
-        String refreshToken = api.auth.loginAndGetRefreshToken(loginData);
+        String refreshToken = AuthApiClient.loginAndGetRefreshToken(loginData);
 
-            LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
-                api.auth.logout(logoutData);
+        LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
+        AuthApiClient.logout(logoutData);
     }
 
 
@@ -73,7 +75,7 @@ public class LogoutTests extends TestBase {
         userCreated = true;
 
         LoginBodyModel loginData = new LoginBodyModel(username, password);
-        String refreshToken = api.auth.loginAndGetRefreshToken(loginData);
+        String refreshToken = AuthApiClient.loginAndGetRefreshToken(loginData);
 
         LogoutBodyModel logoutData =
                 new LogoutBodyModel(refreshToken + ADDITIONAL_SYMBOLS);

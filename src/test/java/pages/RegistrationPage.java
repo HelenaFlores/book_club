@@ -7,10 +7,10 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class RegistrationPage {
 
-    private SelenideElement registrationButtonSubmit = $("[data-testid='signup-button']");
-    private SelenideElement loginInput = $("[data-testid='username-input']");
-    private SelenideElement passwordInput = $("[data-testid='password-input']");
-    private SelenideElement confirmpasswordInput = $("[data-testid='confirm-password-input']");
+    private final SelenideElement registrationButtonSubmit = $("[data-testid='signup-button']");
+    private final SelenideElement loginInput = $("[data-testid='username-input']");
+    private final SelenideElement passwordInput = $("[data-testid='password-input']");
+    private final SelenideElement confirmpasswordInput = $("[data-testid='confirm-password-input']");
 
 
     @Step("Проверка видимости кнопки Зарегистрироваться")

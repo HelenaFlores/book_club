@@ -17,4 +17,5 @@ public record ClubItemModel(
         List<ReviewModel> reviews,
         String created,
         String modified
-) {}
+) {
+}

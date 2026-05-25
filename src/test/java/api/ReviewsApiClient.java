@@ -19,6 +19,30 @@ import static specs.reviews.update.UpdateReviewsSpec.*;
 
 public class ReviewsApiClient {
 
+    @Step("Отправка DELETE запроса на удаление отзыва")
+    public static ValidatableResponse deleteReviews(String accessToken, int reviewsId) {
+        return given(deleteReviewsRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", reviewsId)
+                .when()
+                .delete("/clubs/reviews/{id}/")
+                .then()
+                .spec(successfulDeleteReviewsResponseSpec);
+    }
+
+    @Step("Отправка DELETE запроса на удаление чужого отзыва")
+    public static ForbiddenDeleteReviewsResponseModel forbiddenDeleteReviews(String accessToken, int reviewsId) {
+        return given(deleteReviewsRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .pathParam("id", reviewsId)
+                .when()
+                .delete("/clubs/reviews/{id}/")
+                .then()
+                .spec(forbiddenDeleteReviewsResponseSpec)
+                .extract()
+                .as(ForbiddenDeleteReviewsResponseModel.class);
+    }
+
     @Step("Отправка POST запроса на создание отзыва")
     public SuccessfulCreateReviewsResponseModel createReviews(String accessToken, CreateReviewsBodyModel createReviewsBody) {
         return given(createReviewsRequestSpec)
@@ -59,7 +83,7 @@ public class ReviewsApiClient {
 
     @Step("Успешная отправка PUT запроса на редактирование отзыва")
     public SuccessfulUpdateReviewsResponseModel updateReviews(String accessToken, int reviewsId,
-                                                        UpdateReviewsBodyModel updateReviewsBody) {
+                                                              UpdateReviewsBodyModel updateReviewsBody) {
         return given(updateReviewsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", reviewsId)
@@ -74,7 +98,7 @@ public class ReviewsApiClient {
 
     @Step("Отправка PUT запроса на редактирование чужого отзыва")
     public ForbiddenUpdateReviewsResponseModel forbiddenUpdateReviews(String accessToken, int reviewsId,
-                                                                        UpdateReviewsBodyModel updateReviewsBody) {
+                                                                      UpdateReviewsBodyModel updateReviewsBody) {
         return given(updateReviewsRequestSpec)
                 .header("Authorization", "Bearer " + accessToken)
                 .pathParam("id", reviewsId)
@@ -85,29 +109,5 @@ public class ReviewsApiClient {
                 .spec(forbiddenUpdateReviewsResponseSpec)
                 .extract()
                 .as(ForbiddenUpdateReviewsResponseModel.class);
-    }
-
-    @Step("Отправка DELETE запроса на удаление отзыва")
-    public static ValidatableResponse deleteReviews(String accessToken, int reviewsId) {
-        return given(deleteReviewsRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
-                .pathParam("id", reviewsId)
-                .when()
-                .delete("/clubs/reviews/{id}/")
-                .then()
-                .spec(successfulDeleteReviewsResponseSpec);
-    }
-
-    @Step("Отправка DELETE запроса на удаление чужого отзыва")
-    public static ForbiddenDeleteReviewsResponseModel forbiddenDeleteReviews(String accessToken, int reviewsId) {
-        return given(deleteReviewsRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
-                .pathParam("id", reviewsId)
-                .when()
-                .delete("/clubs/reviews/{id}/")
-                .then()
-                .spec(forbiddenDeleteReviewsResponseSpec)
-                .extract()
-                .as(ForbiddenDeleteReviewsResponseModel.class);
     }
 }

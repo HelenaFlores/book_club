@@ -8,30 +8,30 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class ViewClubPage {
 
-    private SelenideElement bookTitleCard = $(".club-header h1");
-    private SelenideElement publicationYearCard = $(".year");
-    private SelenideElement bookAuthorsCard = $(".authors");
-    private SelenideElement descriptionCard = $(".description");
-    private SelenideElement telegramLink = $(".telegram-btn");
-    private SelenideElement membersCount =
+    private final SelenideElement bookTitleCard = $(".club-header h1");
+    private final SelenideElement publicationYearCard = $(".year");
+    private final SelenideElement bookAuthorsCard = $(".authors");
+    private final SelenideElement descriptionCard = $(".description");
+    private final SelenideElement telegramLink = $(".telegram-btn");
+    private final SelenideElement membersCount =
             $$(".stat-item").get(0).$(".stat-value");
-    private SelenideElement reviewsCount =
+    private final SelenideElement reviewsCount =
             $$(".stat-item").get(1).$(".stat-value");
-    private SelenideElement leaveButton = $(".leave-btn");
-    private SelenideElement joinButton = $(".join-btn");
-    private SelenideElement errorLeaveText = $(".error");
-    private SelenideElement createReviewsButton = $(".add-review-btn");
-    private SelenideElement titleReviewsForm = $(".review-form h3");
-    private SelenideElement assessmentInput = $("[id='assessment']");
-    private SelenideElement readPagesInput = $("[id='readPages']");
-    private SelenideElement reviewInput = $("[id='review']");
-    private SelenideElement publishButton = $(".save-btn");
-    private SelenideElement reviewTextPublish = $(".review-content p");
-    private SelenideElement readPagesPublish = $(".read-pages");
-    private SelenideElement starsPublish = $(".stars");
-    private SelenideElement editReviewButton = $(".edit-review-btn");
-    private SelenideElement titleReviewsEditForm = $(".review-form h3");
-    private SelenideElement deleteReviewButton = $(".delete-review-btn");
+    private final SelenideElement leaveButton = $(".leave-btn");
+    private final SelenideElement joinButton = $(".join-btn");
+    private final SelenideElement errorLeaveText = $(".error");
+    private final SelenideElement createReviewsButton = $(".add-review-btn");
+    private final SelenideElement titleReviewsForm = $(".review-form h3");
+    private final SelenideElement assessmentInput = $("[id='assessment']");
+    private final SelenideElement readPagesInput = $("[id='readPages']");
+    private final SelenideElement reviewInput = $("[id='review']");
+    private final SelenideElement publishButton = $(".save-btn");
+    private final SelenideElement reviewTextPublish = $(".review-content p");
+    private final SelenideElement readPagesPublish = $(".read-pages");
+    private final SelenideElement starsPublish = $(".stars");
+    private final SelenideElement editReviewButton = $(".edit-review-btn");
+    private final SelenideElement titleReviewsEditForm = $(".review-form h3");
+    private final SelenideElement deleteReviewButton = $(".delete-review-btn");
 
 
     @Step("Проверка заголовка книги: {bookTitle}")

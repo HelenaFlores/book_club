@@ -4,12 +4,8 @@ import api.ApiClient;
 import helpers.JsonHelper;
 import io.restassured.response.Response;
 import models.AuthLocalStorageModel;
-import models.clubs.get.ClubItemModel;
-import models.clubs.get.SuccessfulGetClubListResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
-
-import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;

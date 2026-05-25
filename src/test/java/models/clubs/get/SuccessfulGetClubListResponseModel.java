@@ -7,4 +7,5 @@ public record SuccessfulGetClubListResponseModel(
         String next,
         String previous,
         List<ClubItemModel> results
-) { }
+) {
+}

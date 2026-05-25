@@ -1,3 +1,4 @@
 package models.users.registration;
 
-public record RegistrationBodyWithoutLoginModel(String password) {}
+public record RegistrationBodyWithoutLoginModel(String password) {
+}

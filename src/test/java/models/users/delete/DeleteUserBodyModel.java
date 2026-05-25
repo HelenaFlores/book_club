@@ -1,3 +1,4 @@
 package models.users.delete;
 
-public record DeleteUserBodyModel() {}
+public record DeleteUserBodyModel() {
+}

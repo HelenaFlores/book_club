@@ -1,3 +1,4 @@
 package models.reviews.delete;
 
-public record ForbiddenDeleteReviewsResponseModel(String detail) {}
+public record ForbiddenDeleteReviewsResponseModel(String detail) {
+}

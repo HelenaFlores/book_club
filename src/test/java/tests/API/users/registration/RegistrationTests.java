@@ -32,8 +32,8 @@ public class RegistrationTests extends TestBase {
     @AfterEach
     public void after() {
         if (!userCreated) {  // ← пользователь не создался — cleanup не нужен
-                return;
-            }
+            return;
+        }
 
         try {
             LoginBodyModel loginData = new LoginBodyModel(registrationData.username(), registrationData.password());
@@ -42,8 +42,8 @@ public class RegistrationTests extends TestBase {
                 UsersApiClient.deleteUser(accessToken);
             }
         } catch (Exception e) {
-                System.err.println("Failed to cleanup test user: " + e.getMessage());
-            }
+            System.err.println("Failed to cleanup test user: " + e.getMessage());
+        }
     }
 
     @Test

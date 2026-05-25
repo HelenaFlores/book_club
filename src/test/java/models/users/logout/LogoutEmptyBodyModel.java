@@ -1,3 +1,4 @@
 package models.users.logout;
 
-public record LogoutEmptyBodyModel() {}
+public record LogoutEmptyBodyModel() {
+}

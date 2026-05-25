@@ -12,4 +12,5 @@ public record SuccessfulCreateClubResponseModel(int id,
                                                 List<Integer> members,
                                                 List<ReviewModel> reviews,
                                                 String created,
-                                                String modified) {}
+                                                String modified) {
+}

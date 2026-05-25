@@ -13,5 +13,6 @@ public record AuthLocalStorageModel(
             String lastName,
             String email,
             String remoteAddr
-    ) {}
+    ) {
+    }
 }

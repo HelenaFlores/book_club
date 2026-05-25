@@ -1,3 +1,4 @@
 package models.reviews.update;
 
-public record ForbiddenUpdateReviewsResponseModel(String detail) {}
+public record ForbiddenUpdateReviewsResponseModel(String detail) {
+}

@@ -43,11 +43,11 @@ public class GetReviewsByIdTests extends TestBase {
     @BeforeEach
     public void prepareTestData() {
         long uniqueSuffix = System.nanoTime();
-        username = "user_" + + System.nanoTime();
-        password = "pass_" + + System.nanoTime();
+        username = "user_" + +System.nanoTime();
+        password = "pass_" + +System.nanoTime();
 
-        usernameSecond = "user_" + + System.nanoTime();
-        passwordSecond = "pass_" + + System.nanoTime();
+        usernameSecond = "user_" + +System.nanoTime();
+        passwordSecond = "pass_" + +System.nanoTime();
 
         bookTitle = faker.book().title() + "_" + uniqueSuffix;
         bookAuthors = faker.book().author();

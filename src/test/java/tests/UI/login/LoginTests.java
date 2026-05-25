@@ -21,6 +21,10 @@ public class LoginTests extends TestBase {
     String password;
     String accessToken;
 
+    HomePage homePage = new HomePage();
+    LoginPage loginPage = new LoginPage();
+
+
     @BeforeEach
     public void prepareTestData() {
 
@@ -38,9 +42,6 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Открытие страницы авторизации")
     public void OpenLoginPageTests() {
-        HomePage homePage = new HomePage();
-        LoginPage loginPage = new LoginPage();
-
         open(baseUrl);
 
         homePage.openLoginPage();
@@ -56,9 +57,6 @@ public class LoginTests extends TestBase {
     public void SuccessfulLoginTests() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         api.users.register(registrationData);
-
-        HomePage homePage = new HomePage();
-        LoginPage loginPage = new LoginPage();
 
         open(baseUrl);
 

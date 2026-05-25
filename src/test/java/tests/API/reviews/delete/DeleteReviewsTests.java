@@ -10,7 +10,10 @@ import models.reviews.delete.ForbiddenDeleteReviewsResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import tests.API.TestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,11 +41,11 @@ public class DeleteReviewsTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + + System.nanoTime();
-        password = "pass_" + + System.nanoTime();
+        username = "user_" + +System.nanoTime();
+        password = "pass_" + +System.nanoTime();
 
-        usernameSecond = "user_" + + System.nanoTime();
-        passwordSecond = "pass_" + + System.nanoTime();
+        usernameSecond = "user_" + +System.nanoTime();
+        passwordSecond = "pass_" + +System.nanoTime();
 
         long uniqueSuffix = System.nanoTime();
         assessment = faker.number().numberBetween(1, 4);
@@ -113,7 +116,7 @@ public class DeleteReviewsTests extends TestBase {
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         String accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond =new LoginBodyModel(usernameSecond, passwordSecond);
+        LoginBodyModel loginDataSecond = new LoginBodyModel(usernameSecond, passwordSecond);
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(

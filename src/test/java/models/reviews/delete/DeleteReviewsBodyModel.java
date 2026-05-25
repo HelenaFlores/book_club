@@ -1,3 +1,4 @@
 package models.reviews.delete;
 
-public record DeleteReviewsBodyModel() {}
+public record DeleteReviewsBodyModel() {
+}

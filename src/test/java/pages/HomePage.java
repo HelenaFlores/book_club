@@ -11,14 +11,14 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class HomePage {
 
-    private SelenideElement registrationButton = $("a[href='/signup']");
-    private SelenideElement loginButton = $("a[href='/signin']");
-    private SelenideElement profileButton = $("a[href='/profile']");
-    private SelenideElement clubsEmptyResults = $(".no-results");
-    private SelenideElement createClubButton = $("a[href='/clubs/create']");
-    private SelenideElement searchInput = $(".search-input");
-    private SelenideElement openClubCardButton = $(".open-btn");
-    private ElementsCollection listClubCard = $$(".clubs-list");
+    private final SelenideElement registrationButton = $("a[href='/signup']");
+    private final SelenideElement loginButton = $("a[href='/signin']");
+    private final SelenideElement profileButton = $("a[href='/profile']");
+    private final SelenideElement clubsEmptyResults = $(".no-results");
+    private final SelenideElement createClubButton = $("a[href='/clubs/create']");
+    private final SelenideElement searchInput = $(".search-input");
+    private final SelenideElement openClubCardButton = $(".open-btn");
+    private final ElementsCollection listClubCard = $$(".clubs-list");
 
 
     @Step("Открыть страницу регистрации")

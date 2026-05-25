@@ -1,11 +1,11 @@
 package tests.UI;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import api.ApiClient;
-import config.TestConfig;
-import helpers.Attach;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import config.TestConfig;
+import helpers.Attach;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
@@ -24,7 +24,7 @@ public class TestBase {
         String baseUrl = TestConfig.baseUrl();
         Configuration.baseUrl = baseUrl;
         System.setProperty("selenide.baseUrl", baseUrl);
-        RestAssured.baseURI = "https://book-club.qa.guru/";
+        RestAssured.baseURI = "http://localhost:8000";
         RestAssured.basePath = "/api/v1";
         Configuration.browser = TestConfig.browser();
         Configuration.browserSize = TestConfig.browserSize();

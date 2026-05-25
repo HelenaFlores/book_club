@@ -38,6 +38,8 @@ public class EditReviewsTests extends TestBase {
     int updatedAssessment;
     int updateReadPages;
 
+    ViewClubPage viewClubPage = new ViewClubPage();
+
     @BeforeEach
     public void prepareTestData() {
         username = "user_" + System.nanoTime();
@@ -47,7 +49,7 @@ public class EditReviewsTests extends TestBase {
         accessToken = auth.setupAuthenticatedUser(username, password);
 
         long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();;
+        bookTitle = faker.book().title() + "_" + System.nanoTime();
         bookAuthors = faker.book().author();
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
@@ -92,8 +94,6 @@ public class EditReviewsTests extends TestBase {
                 api.reviews.createReviews(accessToken, createReviewsBody);
 
         open(baseUrl + "clubs/" + createReviewsResponse.club());
-
-        ViewClubPage viewClubPage = new ViewClubPage();
 
         viewClubPage
                 .editReviewButtonClick()

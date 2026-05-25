@@ -6,9 +6,9 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
-    private SelenideElement loginButtonSubmit = $("[data-testid='submit-button']");
-    private SelenideElement loginInput = $("[data-testid='username-input']");
-    private SelenideElement passwordInput = $("[data-testid='password-input']");
+    private final SelenideElement loginButtonSubmit = $("[data-testid='submit-button']");
+    private final SelenideElement loginInput = $("[data-testid='username-input']");
+    private final SelenideElement passwordInput = $("[data-testid='password-input']");
 
     @Step("Проверка видимости кнопки Войти")
     public LoginPage loginButtonVisible() {

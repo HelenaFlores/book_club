@@ -1,5 +1,6 @@
 package tests.API.users.update.patch;
 
+import api.AuthApiClient;
 import api.UsersApiClient;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
@@ -54,7 +55,7 @@ public class PartialUpdateUserTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         PartialUpdateBodyModel updateData = new PartialUpdateBodyModel(username, firstname);
-        SuccessfulUpdateResponseModel updateResponse = api.auth.putPartialUpdate(accessToken, updateData);
+        SuccessfulUpdateResponseModel updateResponse = AuthApiClient.putPartialUpdate(accessToken, updateData);
 
         String userNameData = updateData.username();
         String userNameResponse = updateResponse.username();
@@ -71,7 +72,7 @@ public class PartialUpdateUserTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         PartialUpdateBodyModel updateData = new PartialUpdateBodyModel(username, firstname);
-        WrongUpdateMethodAllowedResponseModel updateResponse = api.auth.errorMethodAllowedPatchUpdate(accessToken, updateData);
+        WrongUpdateMethodAllowedResponseModel updateResponse = AuthApiClient.errorMethodAllowedPatchUpdate(accessToken, updateData);
 
         String expectedDetailError = UPDATE_WRONG_DETAIL_ERROR;
         String actualDetailError = String.valueOf(updateResponse.detail());

@@ -3,7 +3,7 @@ package tests;
 public class TestData {
 
     public static final String LOGIN_TOKEN_PREFIX = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-    public static final String  MIN_URI_FOR_API = "/favicon.ico";
+    public static final String MIN_URI_FOR_API = "/favicon.ico";
     public static final String LOGIN_WRONG_CREDENTIALS_ERROR = "Invalid username or password.";
     public static final String LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL =
             null;

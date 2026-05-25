@@ -53,7 +53,7 @@ public class DeleteClubTests extends TestBase {
             UsersApiClient.deleteUser(accessToken);
         }
     }
-    
+
     @Test
     @DisplayName("Успешное удаление клуба")
     public void successfulDeleteClubsTest() {

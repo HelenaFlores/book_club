@@ -5,8 +5,6 @@ import components.AuthComponent;
 import helpers.ClubHelper;
 import models.clubs.get.ClubItemModel;
 import models.clubs.get.SuccessfulGetClubListResponseModel;
-import models.users.login.LoginBodyModel;
-import models.users.registration.RegistrationBodyModel;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pages.CreateClubPage;
 import pages.HomePage;
-import pages.LoginPage;
 import pages.ViewClubPage;
 import tests.UI.TestBase;
 
@@ -36,6 +33,10 @@ public class CreateClubTests extends TestBase {
     String description;
     String telegramChatLink;
 
+    HomePage homePage = new HomePage();
+    CreateClubPage createClubPage = new CreateClubPage();
+    ViewClubPage viewClubPage = new ViewClubPage();
+
     @BeforeEach
     public void prepareTestData() {
         username = "user_" + System.nanoTime();
@@ -45,7 +46,7 @@ public class CreateClubTests extends TestBase {
         accessToken = auth.setupAuthenticatedUser(username, password);
 
         long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();;
+        bookTitle = faker.book().title() + "_" + System.nanoTime();
         bookAuthors = faker.book().author();
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
@@ -62,9 +63,6 @@ public class CreateClubTests extends TestBase {
     @Test
     @DisplayName("Открытие страницы создания клуба")
     public void OpenCreateClubPageTests() {
-        HomePage homePage = new HomePage();
-        CreateClubPage createClubPage = new CreateClubPage();
-
         open(baseUrl);
 
         homePage.openCreateClubPage();
@@ -81,10 +79,6 @@ public class CreateClubTests extends TestBase {
     @Test
     @DisplayName("Успешное создание клуба")
     public void SuccessfulCreateClubTests() {
-        HomePage homePage = new HomePage();
-        CreateClubPage createClubPage = new CreateClubPage();
-        ViewClubPage viewClubPage = new ViewClubPage();
-
         open(baseUrl);
 
         homePage.openCreateClubPage();

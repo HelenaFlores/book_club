@@ -7,4 +7,5 @@ public record SuccessfulCreateReviewsResponseModel(int id,
                                                    int readPages,
                                                    String created,
                                                    String modified,
-                                                   UserModel user) {}
+                                                   UserModel user) {
+}

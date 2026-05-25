@@ -11,6 +11,16 @@ import static specs.users.registration.RegistrationSpec.*;
 
 public class UsersApiClient {
 
+    @Step("Отправка DELETE запроса на удаление пользователя")
+    public static ValidatableResponse deleteUser(String accessToken) {
+        return given(deleteUserRequestSpec)
+                .header("Authorization", "Bearer " + accessToken)
+                .when()
+                .delete("users/me/")
+                .then()
+                .spec(successfulDeleteUserResponseSpec);
+    }
+
     @Step("Отправка REGISTER запроса на создание пользователя")
     public SuccessfulRegistrationResponseModel register(RegistrationBodyModel body) {
         return given(registrationRequestSpec)
@@ -57,15 +67,5 @@ public class UsersApiClient {
                 .spec(wrongRegistrationWithoutLoginResponseSpec)
                 .extract()
                 .as(WrongRegistrationWithoutLoginResponseModel.class);
-    }
-
-    @Step("Отправка DELETE запроса на удаление пользователя")
-    public static ValidatableResponse deleteUser(String accessToken) {
-        return given(deleteUserRequestSpec)
-                .header("Authorization", "Bearer " + accessToken)
-                .when()
-                .delete("users/me/")
-                .then()
-                .spec(successfulDeleteUserResponseSpec);
     }
 }

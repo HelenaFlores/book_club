@@ -2,4 +2,5 @@ package models.users.registration;
 
 import java.util.List;
 
-public record ExistingUserResponseModel(List<String> username) {}
+public record ExistingUserResponseModel(List<String> username) {
+}

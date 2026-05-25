@@ -2,7 +2,6 @@ package tests.UI.clubs;
 
 import api.UsersApiClient;
 import components.AuthComponent;
-import helpers.ClubHelper;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import net.datafaker.Faker;
@@ -32,6 +31,10 @@ public class GetClubByIdTests extends TestBase {
     String description;
     String telegramChatLink;
 
+    HomePage homePage = new HomePage();
+    ViewClubPage viewClubPage = new ViewClubPage();
+
+
     @BeforeEach
     public void prepareTestData() {
         username = "user_" + System.nanoTime();
@@ -41,7 +44,7 @@ public class GetClubByIdTests extends TestBase {
         accessToken = auth.setupAuthenticatedUser(username, password);
 
         long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();;
+        bookTitle = faker.book().title() + "_" + System.nanoTime();
         bookAuthors = faker.book().author();
         publicationYear = faker.number().numberBetween(1900, 2026);
         description = faker.lorem().sentence(10);
@@ -68,9 +71,6 @@ public class GetClubByIdTests extends TestBase {
 
         open(baseUrl);
 
-        HomePage homePage = new HomePage();
-        ViewClubPage viewClubPage = new ViewClubPage();
-
         homePage
                 .searchByTitle(bookTitle)
                 .clubShouldBeVisibleInList(bookTitle)
@@ -94,7 +94,6 @@ public class GetClubByIdTests extends TestBase {
         int clubId = createdClub.id();
 
         SuccessfulCreateClubResponseModel apiClub = api.clubs.getClubById(accessToken, clubId);
-        ViewClubPage viewClubPage = new ViewClubPage();
 
         open(baseUrl + "clubs/" + clubId);
 

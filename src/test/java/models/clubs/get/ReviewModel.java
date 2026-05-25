@@ -9,4 +9,5 @@ public record ReviewModel(
         int readPages,
         String created,
         String modified
-) {}
+) {
+}

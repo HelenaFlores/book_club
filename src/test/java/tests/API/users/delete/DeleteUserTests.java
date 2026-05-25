@@ -1,9 +1,9 @@
 package tests.API.users.delete;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,33 +12,19 @@ import tests.API.TestBase;
 @DisplayName("[API] Удаление пользователя")
 public class DeleteUserTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        long uniqueSuffix = System.nanoTime();
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-
-        bookTitle = faker.book().title() + "_" + uniqueSuffix;
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        testData = new TestDataBuilder()
+                .withUser()
+                .withBook();
     }
 
     @Test
     @DisplayName("Успешное удаление пользователя")
     public void successfulDeleteUserTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =

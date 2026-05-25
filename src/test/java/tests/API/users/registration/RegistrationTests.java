@@ -1,6 +1,7 @@
 package tests.API.users.registration;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.users.login.LoginBodyModel;
 import models.users.registration.*;
 import org.junit.jupiter.api.AfterEach;
@@ -15,28 +16,24 @@ import static tests.TestData.*;
 @DisplayName("[API] Регистрация")
 public class RegistrationTests extends TestBase {
 
-    String username;
-    String password;
-    RegistrationBodyModel registrationData;
     boolean userCreated;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-        registrationData = new RegistrationBodyModel(username, password);
-        userCreated = false;
+        testData = new TestDataBuilder()
+                .withUser()
+                .withRegistrationData();
     }
 
     @AfterEach
     public void after() {
-        if (!userCreated) {  // ← пользователь не создался — cleanup не нужен
+        if (!userCreated) {
             return;
         }
 
         try {
-            LoginBodyModel loginData = new LoginBodyModel(registrationData.username(), registrationData.password());
+            LoginBodyModel loginData = new LoginBodyModel(testData.getRegistrationData().username(), testData.getRegistrationData().password());
             String accessToken = api.auth.loginAndGetAccessToken(loginData);
             if (accessToken != null) {
                 UsersApiClient.deleteUser(accessToken);
@@ -49,14 +46,14 @@ public class RegistrationTests extends TestBase {
     @Test
     @DisplayName("Успешная регистрация")
     public void successfulRegistrationTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = testData.getRegistrationData();
 
         SuccessfulRegistrationResponseModel registrationResponse =
                 api.users.register(registrationData);
         userCreated = true;
 
         assertThat(registrationResponse.id()).isGreaterThan(0);
-        assertThat(registrationResponse.username()).isEqualTo(username);
+        assertThat(registrationResponse.username()).isEqualTo(testData.getUsername());
         assertThat(registrationResponse.firstName()).isEqualTo("");
         assertThat(registrationResponse.lastName()).isEqualTo("");
         assertThat(registrationResponse.email()).isEqualTo("");
@@ -67,13 +64,13 @@ public class RegistrationTests extends TestBase {
     @Test
     @DisplayName("Регистрация существующего пользователя")
     public void existingUserWrongRegistrationTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = testData.getRegistrationData();
 
         SuccessfulRegistrationResponseModel firstRegistrationResponse =
                 api.users.register(registrationData);
         userCreated = true;
 
-        assertThat(firstRegistrationResponse.username()).isEqualTo(username);
+        assertThat(firstRegistrationResponse.username()).isEqualTo(testData.getRegistrationData().username());
 
         ExistingUserResponseModel secondRegistrationResponse =
                 api.users.registerExistingUser(registrationData);
@@ -86,7 +83,7 @@ public class RegistrationTests extends TestBase {
     @Test
     @DisplayName("Регистрация без поля пароля")
     public void wrongRegistrationWithoutPasswordTest() {
-        RegistrationBodyWithoutPasswordModel registrationData = new RegistrationBodyWithoutPasswordModel(username);
+        RegistrationBodyWithoutPasswordModel registrationData = new RegistrationBodyWithoutPasswordModel(testData.getUsername());
 
         WrongRegistrationWithoutPasswordResponseModel registrationResponse =
                 api.users.registerWithoutPassword(registrationData);
@@ -99,7 +96,7 @@ public class RegistrationTests extends TestBase {
     @Test
     @DisplayName("Регистрация без поля логина")
     public void wrongRegistrationWithoutLoginTest() {
-        RegistrationBodyWithoutLoginModel registrationData = new RegistrationBodyWithoutLoginModel(password);
+        RegistrationBodyWithoutLoginModel registrationData = new RegistrationBodyWithoutLoginModel(testData.getPassword());
 
         WrongRegistrationWithoutLoginResponseModel registrationResponse =
                 api.users.registerWithoutLogin(registrationData);

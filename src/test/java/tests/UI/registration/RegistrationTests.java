@@ -2,6 +2,7 @@ package tests.UI.registration;
 
 import api.UsersApiClient;
 import components.AuthComponent;
+import helpers.TestDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,18 +17,19 @@ import static com.codeborne.selenide.Selenide.open;
 @DisplayName("[UI] Регистрация")
 public class RegistrationTests extends TestBase {
 
-    String username;
-    String password;
     String accessToken;
     HomePage homePage = new HomePage();
     RegistrationPage registrationPage = new RegistrationPage();
+    private TestDataBuilder testData;
     private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
+        testData = new TestDataBuilder()
+                .withUser()
+                .withRegistrationData();
 
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        auth = new AuthComponent(api);
     }
 
     @AfterEach
@@ -52,20 +54,20 @@ public class RegistrationTests extends TestBase {
 
     @Test
     @DisplayName("Успешная регистрация")
-    public void SuccessfulRegistrationTests() throws InterruptedException {
+    public void SuccessfulRegistrationTests() {
         open(baseUrl);
 
         homePage.openRegistrationPage();
 
         registrationPage
-                .setLoginInput(username)
-                .setPasswordInput(password)
-                .setConfirmPasswordInput(password)
+                .setLoginInput(testData.getUsername())
+                .setPasswordInput(testData.getPassword())
+                .setConfirmPasswordInput(testData.getPassword())
                 .clickRegistrationButton();
 
         homePage.profileButtonVisible()
                 .clubsEmptyVisible();
 
-        accessToken = auth.loginAfterUiRegistration(username, password);
+        accessToken = auth.loginAfterUiRegistration(testData.getUsername(), testData.getPassword());
     }
 }

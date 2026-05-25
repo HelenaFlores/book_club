@@ -2,11 +2,11 @@ package tests.UI.reviews;
 
 import api.UsersApiClient;
 import components.AuthComponent;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.reviews.create.CreateReviewsBodyModel;
 import models.reviews.create.SuccessfulCreateReviewsResponseModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,41 +20,21 @@ import static com.codeborne.selenide.Selenide.open;
 @DisplayName("[UI] Просмотр отзыва на клуб")
 public class DeleteReviewsTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
     String accessToken;
-    AuthComponent auth;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-    String review;
-    int assessment;
-    int readPages;
-
     ViewClubPage viewClubPage = new ViewClubPage();
+    private TestDataBuilder testData;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withSecondUser()
+                .withBook()
+                .withReview();
 
         auth = new AuthComponent(api);
-        accessToken = auth.setupAuthenticatedUser(username, password);
-
-        long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
-
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
+        accessToken = auth.setupAuthenticatedUser(testData.getUsername(), testData.getPassword());
     }
 
     @AfterEach
@@ -68,20 +48,20 @@ public class DeleteReviewsTests extends TestBase {
     @DisplayName("Успешное удаление отзыва на клуб")
     public void SuccessfulCreateReviewsOnClubTests() {
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
 
         CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
                 createClubResponse.id(),
-                review,
-                assessment,
-                readPages
+                testData.getReview(),
+                testData.getAssessment(),
+                testData.getReadPages()
         );
         SuccessfulCreateReviewsResponseModel createReviewsResponse =
                 api.reviews.createReviews(accessToken, createReviewsBody);

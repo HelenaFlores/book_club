@@ -1,6 +1,7 @@
 package tests.API.clubs.update;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.clubs.update.SuccessfulUpdateClubResponseModel;
@@ -20,27 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UpdateClubTests extends TestBase {
 
     private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
     String accessToken;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        long uniqueSuffix = System.nanoTime();
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-
-        bookTitle = faker.book().title() + "_" + uniqueSuffix;
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        testData = new TestDataBuilder()
+                .withUser()
+                .withBook();
     }
 
     @AfterEach
@@ -53,7 +41,7 @@ public class UpdateClubTests extends TestBase {
     @Test
     @DisplayName("Успешное редактирование клуба PATCH запросом")
     public void successfulPatchUpdateClubTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =
@@ -61,11 +49,11 @@ public class UpdateClubTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
@@ -75,10 +63,10 @@ public class UpdateClubTests extends TestBase {
 
         UpdateClubBodyModel updateClubBody = new UpdateClubBodyModel(
                 updatedBookTitle,
-                bookAuthors,
-                publicationYear,
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
                 updatedDescription,
-                telegramChatLink
+                testData.getTelegramChatLink()
         );
         SuccessfulUpdateClubResponseModel updateClubResponse =
                 api.clubs.updateClub(accessToken, createClubResponse.id(), updateClubBody);
@@ -93,7 +81,7 @@ public class UpdateClubTests extends TestBase {
     @Test
     @DisplayName("Успешное редактирование клуба PUT запросом")
     public void successfulPutUpdateClubTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =
@@ -101,11 +89,11 @@ public class UpdateClubTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
@@ -115,10 +103,10 @@ public class UpdateClubTests extends TestBase {
 
         UpdateClubBodyModel updateClubBody = new UpdateClubBodyModel(
                 updatedBookTitle,
-                bookAuthors,
-                publicationYear,
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
                 updatedDescription,
-                telegramChatLink
+                testData.getTelegramChatLink()
         );
         SuccessfulUpdateClubResponseModel updateClubResponse =
                 api.clubs.updatePutClub(accessToken, createClubResponse.id(), updateClubBody);

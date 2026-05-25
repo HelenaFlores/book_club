@@ -3,9 +3,8 @@ package tests.UI.clubs;
 import api.UsersApiClient;
 import components.AuthComponent;
 import helpers.ClubHelper;
+import helpers.TestDataBuilder;
 import models.clubs.get.ClubItemModel;
-import models.clubs.get.SuccessfulGetClubListResponseModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,36 +20,21 @@ import static com.codeborne.selenide.Selenide.open;
 @DisplayName("[UI] Создание клуба")
 public class CreateClubTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
     String accessToken;
-    AuthComponent auth;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-
     HomePage homePage = new HomePage();
     CreateClubPage createClubPage = new CreateClubPage();
     ViewClubPage viewClubPage = new ViewClubPage();
+    private TestDataBuilder testData;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withBook();
 
         auth = new AuthComponent(api);
-        accessToken = auth.setupAuthenticatedUser(username, password);
-
-        long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        accessToken = auth.setupAuthenticatedUser(testData.getUsername(), testData.getPassword());
     }
 
     @AfterEach
@@ -84,23 +68,23 @@ public class CreateClubTests extends TestBase {
         homePage.openCreateClubPage();
 
         createClubPage
-                .setBookTitleInput(bookTitle)
-                .setBookAuthorsInput(bookAuthors)
-                .setPublicationYearInput(publicationYear)
-                .setDescriptionInput(description)
-                .setTelegramChatLinkInput(telegramChatLink)
+                .setBookTitleInput(testData.getBookTitle())
+                .setBookAuthorsInput(testData.getBookAuthors())
+                .setPublicationYearInput(testData.getPublicationYear())
+                .setDescriptionInput(testData.getDescription())
+                .setTelegramChatLinkInput(testData.getTelegramChatLink())
                 .createClubButtonClick();
 
-        SuccessfulGetClubListResponseModel clubListResponse = api.clubs.getClubList(accessToken);
-        ClubItemModel ourClub = ClubHelper.waitForClubInList(accessToken, bookTitle, api.clubs, 10);
+        api.clubs.getClubList(accessToken);
+        ClubItemModel ourClub = ClubHelper.waitForClubInList(accessToken, testData.getBookTitle(), api.clubs, 10);
         int clubId = ourClub.id();
 
         open(baseUrl + "clubs/" + clubId);
         viewClubPage
-                .bookTitleCardVisible(bookTitle)
-                .publicationYearCardVisible(publicationYear)
-                .bookAuthorsCardVisible(bookAuthors)
-                .descriptionCardVisible(description)
-                .telegramLinkVisible(telegramChatLink);
+                .bookTitleCardVisible(testData.getBookTitle())
+                .publicationYearCardVisible(testData.getPublicationYear())
+                .bookAuthorsCardVisible(testData.getBookAuthors())
+                .descriptionCardVisible(testData.getDescription())
+                .telegramLinkVisible(testData.getTelegramChatLink());
     }
 }

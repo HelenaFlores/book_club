@@ -1,6 +1,7 @@
 package tests.API.users.login;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.users.login.*;
 import models.users.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.AfterEach;
@@ -15,16 +16,14 @@ import static tests.TestData.*;
 @DisplayName("[API] Авторизация")
 public class LoginTests extends TestBase {
 
-    String username;
-    String password;
     String accessToken;
     boolean userCreated;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-        userCreated = false;
+        testData = new TestDataBuilder()
+                .withUser();
     }
 
     @AfterEach
@@ -35,7 +34,7 @@ public class LoginTests extends TestBase {
 
         try {
             if (accessToken == null) {
-                LoginBodyModel loginData = new LoginBodyModel(username, password);
+                LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword());
                 accessToken = api.auth.loginAndGetAccessToken(loginData);
             }
             if (accessToken != null) {
@@ -49,11 +48,11 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Успешная авторизация")
     public void successfulLoginTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
         userCreated = true;
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword());
 
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
 
@@ -68,11 +67,11 @@ public class LoginTests extends TestBase {
     @DisplayName("Авторизация с неверным паролем")
     public void wrongCredentialsLoginTest() {
         RegistrationBodyModel registrationData =
-                new RegistrationBodyModel(username, password);
+                new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
         userCreated = true;
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password + ADDITIONAL_SYMBOLS);
+        LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword() + ADDITIONAL_SYMBOLS);
         WrongCredentialsLoginResponseModel loginResponse =
                 api.auth.loginWrongCredentials(loginData);
 
@@ -85,7 +84,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Авторизация с неверным логином")
     public void wrongLoginNullUsernameTest() {
         LoginBodyModel loginData =
-                new LoginBodyModel(LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL, password);
+                new LoginBodyModel(LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL, testData.getPassword());
 
         WrongLoginNullUsernameResponseModel loginResponse =
                 api.auth.wrongLoginNullUsernameResponse(loginData);
@@ -99,7 +98,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Авторизация с null паролем")
     public void wrongPasswordNullTest() {
         LoginBodyModel loginData =
-                new LoginBodyModel(username, LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL);
+                new LoginBodyModel(testData.getUsername(), LOGIN_WRONG_PASSWORD_OR_USERNAME_NULL);
 
         WrongLoginNullPasswordResponseModel loginResponse =
                 api.auth.wrongLoginNullPasswordResponse(loginData);

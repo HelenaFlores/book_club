@@ -2,9 +2,9 @@ package tests.UI.clubs;
 
 import api.UsersApiClient;
 import components.AuthComponent;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,38 +20,22 @@ import static tests.TestData.LEAVE_CLUB_ERROR;
 @DisplayName("[UI] Выход из клуба")
 public class LeaveClubByIdTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String usernameSecond;
-    String passwordSecond;
     String accessToken;
     String accessTokenSecond;
-    AuthComponent auth;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-
     HomePage homePage = new HomePage();
     ViewClubPage viewClubPage = new ViewClubPage();
+    private TestDataBuilder testData;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withSecondUser()
+                .withBook();
 
         auth = new AuthComponent(api);
-        accessToken = auth.setupAuthenticatedUser(username, password);
-
-        long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        accessToken = auth.setupAuthenticatedUser(testData.getUsername(), testData.getPassword());
     }
 
     @AfterEach
@@ -68,19 +52,16 @@ public class LeaveClubByIdTests extends TestBase {
     @DisplayName("Успешный выход из клуба")
     public void SuccessfulLeaveClubPageTests() {
         CreateClubBodyModel clubData = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
-                description,
-                telegramChatLink);
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                Integer.parseInt(String.valueOf(testData.getPublicationYear())),
+                testData.getDescription(),
+                testData.getTelegramChatLink());
 
         SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
         int clubId = createdClub.id();
 
-        usernameSecond = "user_" + System.nanoTime();
-        passwordSecond = "pass_" + System.nanoTime();
-
-        accessTokenSecond = auth.setupAuthenticatedUser(usernameSecond, passwordSecond);
+        accessTokenSecond = auth.setupAuthenticatedUser(testData.getUsernameSecond(), testData.getPasswordSecond());
 
         open(baseUrl + "clubs/" + clubId);
 
@@ -89,8 +70,8 @@ public class LeaveClubByIdTests extends TestBase {
                 .leaveButtonClick();
 
         homePage
-                .searchByTitle(bookTitle)
-                .clubShouldBeVisibleInList(bookTitle);
+                .searchByTitle(testData.getBookTitle())
+                .clubShouldBeVisibleInList(testData.getBookTitle());
         viewClubPage.joinButtonVisible();
     }
 
@@ -98,11 +79,11 @@ public class LeaveClubByIdTests extends TestBase {
     @DisplayName("Ошибка выхода из клуба")
     public void LeaveClubErrorTests() {
         CreateClubBodyModel clubData = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
-                description,
-                telegramChatLink);
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                Integer.parseInt(String.valueOf(testData.getPublicationYear())),
+                testData.getDescription(),
+                testData.getTelegramChatLink());
 
         SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
         int clubId = createdClub.id();

@@ -2,6 +2,7 @@ package tests.API.reviews.delete;
 
 import api.ReviewsApiClient;
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.reviews.create.CreateReviewsBodyModel;
@@ -9,7 +10,6 @@ import models.reviews.create.SuccessfulCreateReviewsResponseModel;
 import models.reviews.delete.ForbiddenDeleteReviewsResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,41 +22,17 @@ import static tests.TestData.FORBIDDEN_ERROR;
 @DisplayName("[API] Удаление отзыва")
 public class DeleteReviewsTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String usernameSecond;
-    String passwordSecond;
-    String review;
-    int assessment;
-    int readPages;
     String accessToken;
     String accessTokenSecond;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + +System.nanoTime();
-        password = "pass_" + +System.nanoTime();
-
-        usernameSecond = "user_" + +System.nanoTime();
-        passwordSecond = "pass_" + +System.nanoTime();
-
-        long uniqueSuffix = System.nanoTime();
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
-
-        bookTitle = faker.book().title() + "_" + uniqueSuffix;
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        testData = new TestDataBuilder()
+                .withUser()
+                .withSecondUser()
+                .withBook()
+                .withReview();
     }
 
     @AfterEach
@@ -72,7 +48,7 @@ public class DeleteReviewsTests extends TestBase {
     @Test
     @DisplayName("Успешное удаление своего отзыва")
     public void successfulDeleteReviewsTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =
@@ -80,11 +56,11 @@ public class DeleteReviewsTests extends TestBase {
         String accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
 
         SuccessfulCreateClubResponseModel createClubResponse =
@@ -92,9 +68,9 @@ public class DeleteReviewsTests extends TestBase {
 
         CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
                 createClubResponse.id(),
-                review,
-                assessment,
-                readPages
+                testData.getReview(),
+                testData.getAssessment(),
+                testData.getReadPages()
         );
 
         SuccessfulCreateReviewsResponseModel createReviewsResponse =
@@ -106,25 +82,25 @@ public class DeleteReviewsTests extends TestBase {
     @Test
     @DisplayName("Ошибка удаления чужого отзыва")
     public void forbiddenDeleteReviewsTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
-        RegistrationBodyModel registrationDataSecond = new RegistrationBodyModel(usernameSecond, passwordSecond);
+        RegistrationBodyModel registrationDataSecond = new RegistrationBodyModel(testData.getUsernameSecond(), testData.getPasswordSecond());
         api.users.register(registrationDataSecond);
 
         LoginBodyModel loginData =
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         String accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond = new LoginBodyModel(usernameSecond, passwordSecond);
+        LoginBodyModel loginDataSecond = new LoginBodyModel(testData.getUsernameSecond(), testData.getPasswordSecond());
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
 
         SuccessfulCreateClubResponseModel createClubResponse =
@@ -132,9 +108,9 @@ public class DeleteReviewsTests extends TestBase {
 
         CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
                 createClubResponse.id(),
-                review,
-                assessment,
-                readPages
+                testData.getReview(),
+                testData.getAssessment(),
+                testData.getReadPages()
         );
 
         SuccessfulCreateReviewsResponseModel createReviewsResponse =

@@ -2,9 +2,9 @@ package tests.UI.clubs;
 
 import api.UsersApiClient;
 import components.AuthComponent;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,36 +19,20 @@ import static com.codeborne.selenide.Selenide.open;
 @DisplayName("[UI] Просмотр клуба")
 public class GetClubByIdTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
     String accessToken;
-    AuthComponent auth;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-
     HomePage homePage = new HomePage();
     ViewClubPage viewClubPage = new ViewClubPage();
-
+    private TestDataBuilder testData;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withBook();
 
         auth = new AuthComponent(api);
-        accessToken = auth.setupAuthenticatedUser(username, password);
-
-        long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        accessToken = auth.setupAuthenticatedUser(testData.getUsername(), testData.getPassword());
     }
 
     @AfterEach
@@ -62,33 +46,34 @@ public class GetClubByIdTests extends TestBase {
     @DisplayName("Поиск и открытие страницы просмотра клуба")
     public void OpenViewClubPageTests() {
         CreateClubBodyModel clubData = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
-                description,
-                telegramChatLink);
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                Integer.parseInt(String.valueOf(testData.getPublicationYear())),
+                testData.getDescription(),
+                testData.getTelegramChatLink());
+
         api.clubs.createClub(accessToken, clubData);
 
         open(baseUrl);
 
         homePage
-                .searchByTitle(bookTitle)
-                .clubShouldBeVisibleInList(bookTitle)
+                .searchByTitle(testData.getBookTitle())
+                .clubShouldBeVisibleInList(testData.getBookTitle())
                 .openClubByTitle();
 
         viewClubPage
-                .bookTitleCardVisible(bookTitle);
+                .bookTitleCardVisible(testData.getBookTitle());
     }
 
     @Test
     @DisplayName("Просмотр страницы клуба")
     public void DetailViewClubPageTests() {
         CreateClubBodyModel clubData = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
-                description,
-                telegramChatLink);
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                Integer.parseInt(String.valueOf(testData.getPublicationYear())),
+                testData.getDescription(),
+                testData.getTelegramChatLink());
 
         SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
         int clubId = createdClub.id();
@@ -98,11 +83,11 @@ public class GetClubByIdTests extends TestBase {
         open(baseUrl + "clubs/" + clubId);
 
         viewClubPage
-                .bookTitleCardVisible(bookTitle)
-                .publicationYearCardVisible(publicationYear)
-                .bookAuthorsCardVisible(bookAuthors)
-                .descriptionCardVisible(description)
-                .telegramLinkVisible(telegramChatLink)
+                .bookTitleCardVisible(testData.getBookTitle())
+                .publicationYearCardVisible(testData.getPublicationYear())
+                .bookAuthorsCardVisible(testData.getBookAuthors())
+                .descriptionCardVisible(testData.getDescription())
+                .telegramLinkVisible(testData.getTelegramChatLink())
                 .membersCountShouldBe(apiClub.members().size())
                 .reviewsCountShouldBe(apiClub.reviews().size())
                 .leaveButtonVisible()

@@ -2,6 +2,7 @@ package tests.UI.reviews;
 
 import api.UsersApiClient;
 import components.AuthComponent;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import net.datafaker.Faker;
@@ -20,39 +21,21 @@ public class CreateReviewsTests extends TestBase {
 
     private final Faker faker = new Faker();
 
-    String username;
-    String password;
     String accessToken;
-    AuthComponent auth;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-    String review;
-    int assessment;
-    int readPages;
-
     ViewClubPage viewClubPage = new ViewClubPage();
+    private TestDataBuilder testData;
+    private AuthComponent auth;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withSecondUser()
+                .withBook()
+                .withReview();
 
         auth = new AuthComponent(api);
-        accessToken = auth.setupAuthenticatedUser(username, password);
-
-        long uniqueSuffix = System.nanoTime();
-        bookTitle = faker.book().title() + "_" + System.nanoTime();
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
-
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
+        accessToken = auth.setupAuthenticatedUser(testData.getUsername(), testData.getPassword());
     }
 
     @AfterEach
@@ -66,11 +49,11 @@ public class CreateReviewsTests extends TestBase {
     @DisplayName("Успешное создание отзыва на клуб")
     public void SuccessfulCreateReviewsOnClubTests() {
         CreateClubBodyModel clubData = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                Integer.parseInt(String.valueOf(publicationYear)),
-                description,
-                telegramChatLink);
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                Integer.parseInt(String.valueOf(testData.getPublicationYear())),
+                testData.getDescription(),
+                testData.getTelegramChatLink());
 
         SuccessfulCreateClubResponseModel createdClub = api.clubs.createClub(accessToken, clubData);
         int clubId = createdClub.id();
@@ -80,14 +63,14 @@ public class CreateReviewsTests extends TestBase {
         viewClubPage
                 .createReviewsButtonClick()
                 .titleReviewsFormVisible()
-                .assessmentInputSetValue(assessment)
-                .readPagesInputSetValue(readPages)
-                .reviewInputSetValue(review)
+                .assessmentInputSetValue(testData.getAssessment())
+                .readPagesInputSetValue(testData.getReadPages())
+                .reviewInputSetValue(testData.getReview())
                 .publishButtonClick();
 
         viewClubPage
-                .reviewTextPublishVisible(review)
-                .readPagesPublishVisible(readPages)
-                .starsPublishVisible(assessment);
+                .reviewTextPublishVisible(testData.getReview())
+                .readPagesPublishVisible(testData.getReadPages())
+                .starsPublishVisible(testData.getAssessment());
     }
 }

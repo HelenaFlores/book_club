@@ -1,6 +1,7 @@
 package tests.UI.login;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.AfterEach;
@@ -17,19 +18,15 @@ import static com.codeborne.selenide.Selenide.open;
 @DisplayName("[UI] Авторизация")
 public class LoginTests extends TestBase {
 
-    String username;
-    String password;
     String accessToken;
-
     HomePage homePage = new HomePage();
     LoginPage loginPage = new LoginPage();
-
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
+        testData = new TestDataBuilder()
+                .withUser();
     }
 
     @AfterEach
@@ -55,7 +52,7 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Успешная авторизация")
     public void SuccessfulLoginTests() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         open(baseUrl);
@@ -63,15 +60,15 @@ public class LoginTests extends TestBase {
         homePage.openLoginPage();
 
         loginPage
-                .setLoginInput(username)
-                .setPasswordInput(password)
+                .setLoginInput(testData.getUsername())
+                .setPasswordInput(testData.getPassword())
                 .clickLoginButton();
 
         homePage.profileButtonVisible()
                 .clubsEmptyVisible();
 
         LoginBodyModel loginData =
-                new LoginBodyModel(username, password);
+                new LoginBodyModel(testData.getUsername(), testData.getPassword());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
     }
 }

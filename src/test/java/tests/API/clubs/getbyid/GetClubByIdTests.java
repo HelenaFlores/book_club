@@ -1,11 +1,11 @@
 package tests.API.clubs.getbyid;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,28 +17,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("[API] Просмотр клуба по id")
 public class GetClubByIdTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
     String accessToken;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        long uniqueSuffix = System.nanoTime();
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-
-        bookTitle = faker.book().title() + "_" + uniqueSuffix;
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
+        testData = new TestDataBuilder()
+                .withUser()
+                .withBook();
     }
 
     @AfterEach
@@ -51,7 +37,7 @@ public class GetClubByIdTests extends TestBase {
     @Test
     @DisplayName("Успешный просмотр клуба по id")
     public void successfulGetClubByIdTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =
@@ -59,11 +45,11 @@ public class GetClubByIdTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);

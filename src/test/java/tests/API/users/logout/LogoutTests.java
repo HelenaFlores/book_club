@@ -2,6 +2,7 @@ package tests.API.users.logout;
 
 import api.AuthApiClient;
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.users.login.LoginBodyModel;
 import models.users.logout.LogoutBodyModel;
 import models.users.logout.LogoutEmptyBodyModel;
@@ -20,17 +21,14 @@ import static tests.TestData.*;
 @DisplayName("[API] Выход из профиля")
 public class LogoutTests extends TestBase {
 
-    String username;
-    String password;
     String accessToken;
     boolean userCreated;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + System.nanoTime();
-        password = "pass_" + System.nanoTime();
-        userCreated = false;
-        accessToken = null;
+        testData = new TestDataBuilder()
+                .withUser();
     }
 
     @AfterEach
@@ -41,7 +39,7 @@ public class LogoutTests extends TestBase {
 
         try {
             if (accessToken == null) {
-                LoginBodyModel loginData = new LoginBodyModel(username, password);
+                LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword());
                 accessToken = api.auth.loginAndGetAccessToken(loginData);
             }
             if (accessToken != null) {
@@ -55,11 +53,11 @@ public class LogoutTests extends TestBase {
     @Test
     @DisplayName("Успешный выход из профиля")
     public void successfulLogoutTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
         userCreated = true;
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword());
         String refreshToken = AuthApiClient.loginAndGetRefreshToken(loginData);
 
         LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
@@ -70,11 +68,11 @@ public class LogoutTests extends TestBase {
     @Test
     @DisplayName("Выход из профиля с невалидным токеном")
     public void noValidTokenLogoutTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
         userCreated = true;
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.getUsername(), testData.getPassword());
         String refreshToken = AuthApiClient.loginAndGetRefreshToken(loginData);
 
         LogoutBodyModel logoutData =

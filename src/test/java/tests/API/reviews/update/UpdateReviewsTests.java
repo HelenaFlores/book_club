@@ -1,6 +1,7 @@
 package tests.API.reviews.update;
 
 import api.UsersApiClient;
+import helpers.TestDataBuilder;
 import models.clubs.create.CreateClubBodyModel;
 import models.clubs.create.SuccessfulCreateClubResponseModel;
 import models.reviews.create.CreateReviewsBodyModel;
@@ -10,7 +11,6 @@ import models.reviews.update.SuccessfulUpdateReviewsResponseModel;
 import models.reviews.update.UpdateReviewsBodyModel;
 import models.users.login.LoginBodyModel;
 import models.users.registration.RegistrationBodyModel;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,49 +27,18 @@ import static tests.TestData.FORBIDDEN_ERROR;
 @DisplayName("[API] Редактирование отзыва")
 public class UpdateReviewsTests extends TestBase {
 
-    private final Faker faker = new Faker();
-
-    String username;
-    String password;
-    String usernameSecond;
-    String passwordSecond;
-    String review;
-    int assessment;
-    int readPages;
     String accessToken;
     String accessTokenSecond;
-    String bookTitle;
-    String bookAuthors;
-    int publicationYear;
-    String description;
-    String telegramChatLink;
-    String updatedReview;
-    int updatedAssessment;
-    int updateReadPages;
+    private TestDataBuilder testData;
 
     @BeforeEach
     public void prepareTestData() {
-        username = "user_" + +System.nanoTime();
-        password = "pass_" + +System.nanoTime();
-
-        usernameSecond = "user_" + +System.nanoTime();
-        passwordSecond = "pass_" + +System.nanoTime();
-
-
-        long uniqueSuffix = System.nanoTime();
-        assessment = faker.number().numberBetween(1, 4);
-        review = faker.book().title() + "_" + uniqueSuffix;
-        readPages = faker.number().positive();
-
-        bookTitle = faker.book().title() + "_" + uniqueSuffix;
-        bookAuthors = faker.book().author();
-        publicationYear = faker.number().numberBetween(1900, 2026);
-        description = faker.lorem().sentence(10);
-        telegramChatLink = "https://t.me/club_" + uniqueSuffix;
-
-        updatedReview = faker.book().title() + "_updated";
-        updatedAssessment = faker.number().numberBetween(1, 4);
-        updateReadPages = faker.number().positive();
+        testData = new TestDataBuilder()
+                .withUser()
+                .withSecondUser()
+                .withBook()
+                .withReview()
+                .withUpdatedReview();
     }
 
     @AfterEach
@@ -85,7 +54,7 @@ public class UpdateReviewsTests extends TestBase {
     @DisplayName("Успешное редактирование отзыва своего клуба")
     @Test
     public void successfulUpdateReviewsTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
         LoginBodyModel loginData =
@@ -93,20 +62,20 @@ public class UpdateReviewsTests extends TestBase {
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
 
         CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
                 createClubResponse.id(),
-                review,
-                assessment,
-                readPages
+                testData.getReview(),
+                testData.getAssessment(),
+                testData.getReadPages()
         );
 
         SuccessfulCreateReviewsResponseModel createReviewsResponse =
@@ -114,9 +83,9 @@ public class UpdateReviewsTests extends TestBase {
 
         UpdateReviewsBodyModel updateReviewsBody = new UpdateReviewsBodyModel(
                 createClubResponse.id(),
-                updatedReview,
-                updatedAssessment,
-                updateReadPages
+                testData.getUpdatedReview(),
+                testData.getUpdatedAssessment(),
+                testData.getUpdateReadPages()
         );
 
         SuccessfulUpdateReviewsResponseModel updateReviewsResponse =
@@ -128,9 +97,9 @@ public class UpdateReviewsTests extends TestBase {
 
         assertThat(updateReviewsResponse.id()).isGreaterThan(0);
         assertThat(updateReviewsResponse.club()).isEqualTo(updateReviewsBody.club());
-        assertThat(updateReviewsResponse.review()).isEqualTo(updatedReview);
-        assertThat(updateReviewsResponse.assessment()).isEqualTo(updatedAssessment);
-        assertThat(updateReviewsResponse.readPages()).isEqualTo(updateReadPages);
+        assertThat(updateReviewsResponse.review()).isEqualTo(testData.getUpdatedReview());
+        assertThat(updateReviewsResponse.assessment()).isEqualTo(testData.getUpdatedAssessment());
+        assertThat(updateReviewsResponse.readPages()).isEqualTo(testData.getUpdateReadPages());
         assertThat(responseInstantCreated).isCloseTo(currentInstant, within(1, ChronoUnit.SECONDS));
         assertThat(responseInstantModified).isCloseTo(currentInstant, within(2, ChronoUnit.SECONDS));
     }
@@ -138,34 +107,34 @@ public class UpdateReviewsTests extends TestBase {
     @DisplayName("Ошибка редактирования чужого отзыва")
     @Test
     public void forbiddenUpdateReviewsTest() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.getUsername(), testData.getPassword());
         api.users.register(registrationData);
 
-        RegistrationBodyModel registrationDataSecond = new RegistrationBodyModel(usernameSecond, passwordSecond);
+        RegistrationBodyModel registrationDataSecond = new RegistrationBodyModel(testData.getUsernameSecond(), testData.getPasswordSecond());
         api.users.register(registrationDataSecond);
 
         LoginBodyModel loginData =
                 new LoginBodyModel(registrationData.username(), registrationData.password());
         accessToken = api.auth.loginAndGetAccessToken(loginData);
 
-        LoginBodyModel loginDataSecond = new LoginBodyModel(usernameSecond, passwordSecond);
+        LoginBodyModel loginDataSecond = new LoginBodyModel(testData.getUsernameSecond(), testData.getPasswordSecond());
         accessTokenSecond = api.auth.loginAndGetAccessToken(loginDataSecond);
 
         CreateClubBodyModel createClubBody = new CreateClubBodyModel(
-                bookTitle,
-                bookAuthors,
-                publicationYear,
-                description,
-                telegramChatLink
+                testData.getBookTitle(),
+                testData.getBookAuthors(),
+                testData.getPublicationYear(),
+                testData.getDescription(),
+                testData.getTelegramChatLink()
         );
         SuccessfulCreateClubResponseModel createClubResponse =
                 api.clubs.createClub(accessToken, createClubBody);
 
         CreateReviewsBodyModel createReviewsBody = new CreateReviewsBodyModel(
                 createClubResponse.id(),
-                review,
-                assessment,
-                readPages
+                testData.getReview(),
+                testData.getAssessment(),
+                testData.getReadPages()
         );
 
         SuccessfulCreateReviewsResponseModel createReviewsResponse =
@@ -173,9 +142,9 @@ public class UpdateReviewsTests extends TestBase {
 
         UpdateReviewsBodyModel updateReviewsBody = new UpdateReviewsBodyModel(
                 createReviewsResponse.id(),
-                updatedReview,
-                updatedAssessment,
-                updateReadPages
+                testData.getUpdatedReview(),
+                testData.getUpdatedAssessment(),
+                testData.getUpdateReadPages()
         );
 
         ForbiddenUpdateReviewsResponseModel updateReviewsResponse =

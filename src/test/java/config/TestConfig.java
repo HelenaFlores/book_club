@@ -6,7 +6,7 @@ public final class TestConfig {
     }
 
     public static String baseUrl() {
-        return System.getProperty("baseUrl", "http://localhost:8100/");
+        return System.getProperty("baseUrl", "https://book-club.qa.guru/");
     }
 
     public static String baseApiPath() {
